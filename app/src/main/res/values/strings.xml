@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Ssing</string>
+
+
+    <string name="title_drawer_toggle_open_desc">메뉴가 열렸습니다.</string>
+    <string name="title_drawer_toggle_close_desc">메뉴가 닫혔습니다.</string>
+
+
+    <string-array name="titles_main_tab">
+        <item>최신</item>
+        <item>근처</item>
+    </string-array>
+
+
+    <string name="title_empty_post_list">등록된 글이 없습니다.</string>
+
 </resources>

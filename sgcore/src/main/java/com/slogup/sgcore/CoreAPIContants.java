@@ -5,7 +5,7 @@ package com.slogup.sgcore;
  */
 public class CoreAPIContants {
 
-    public static String RootUrl = "http://192.168.0.106:3001";
+    public static String RootUrl = "http://52.198.33.208:8080";
     public static String RootUrlPostFix = "/api/";
 
     public class SessionParams {
@@ -20,6 +20,16 @@ public class CoreAPIContants {
             public static final String APP_VERSION = "version";
             public static final String PUSH_TOKEN = "token";
         }
+    }
+
+    public class Session {
+
+        public static final String URL = "accounts/session";
+
+        public class Request {
+
+        }
+
     }
 
     public class UserParams {

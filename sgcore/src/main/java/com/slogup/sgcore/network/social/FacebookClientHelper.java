@@ -30,7 +30,6 @@ public class FacebookClientHelper extends SocialClientHelper {
         mCallbackManager = CallbackManager.Factory.create();
     }
 
-
     @Override
     public void login(Activity activity, final SocialResponseCallback socialClientCallback) {
 
