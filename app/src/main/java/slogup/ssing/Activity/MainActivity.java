@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import slogup.ssing.Adapter.TabPagerAdapter;
 import slogup.ssing.Fragment.PostListFragment;
+import slogup.ssing.Fragment.SignUpDialogFragment;
 import slogup.ssing.View.CustomTabLayout;
 import slogup.ssing.View.MainDrawerViewHolder;
 
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private PostListFragment mLatestOrderPostListFragment;
     private PostListFragment mDistanceOrderPostListFragment;
+    private SignUpDialogFragment mSignUpDialogFragment = SignUpDialogFragment.newInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mSignUpDialogFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     private void setUpDrawer() {

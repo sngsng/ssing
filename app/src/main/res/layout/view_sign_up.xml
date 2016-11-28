@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/sign_up_login_container"
+             android:layout_width="match_parent"
+             android:layout_height="200dp"
+             android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/title_sign_up"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_btn_facebook">
+
+            <Button
+                android:id="@+id/sign_up_facebook_button"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="@string/title_sign_up_facebook"
+                android:textAllCaps="false"
+                android:textColor="@color/colorWhite"
+                android:textSize="13sp"
+                android:textStyle="bold"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/shape_btn_kakao">
+
+            <Button
+                android:id="@+id/sign_up_kakao_button"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_sign_up_kakao"
+                android:textAllCaps="false"
+                android:textColor="@color/colorKakaoText"
+                android:textSize="13sp"
+                android:textStyle="bold"/>
+
+        </FrameLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="@string/title_footer_terms"
+            android:textSize="12sp"/>
+
+    </LinearLayout>
+
+
+</FrameLayout>

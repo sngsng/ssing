@@ -52,7 +52,7 @@ public class PostSearchFilter {
     public static PostSearchFilter create(long last) {
 
         PostSearchFilter postSearchFilter = new PostSearchFilter();
-        postSearchFilter.setmLast(last);
+        postSearchFilter.setLast(last);
 
         return postSearchFilter;
     }
@@ -105,84 +105,84 @@ public class PostSearchFilter {
         return jsonObject;
     }
 
-    public String getmSearchItem() {
+    public String getSearchItem() {
         return mSearchItem;
     }
 
-    public void setmSearchItem(String mSearchItem) {
-        this.mSearchItem = mSearchItem;
+    public void setSearchItem(String searchItem) {
+        mSearchItem = searchItem;
     }
 
-    public ArrayList<String> getmTags() {
+    public ArrayList<String> getTags() {
         return mTags;
     }
 
-    public void setmTags(ArrayList<String> mTags) {
-        this.mTags = mTags;
+    public void setTags(ArrayList<String> tags) {
+        mTags = tags;
     }
 
-    public String getmGender() {
+    public String getGender() {
         return mGender;
     }
 
-    public void setmGender(String mGender) {
-        this.mGender = mGender;
+    public void setGender(String gender) {
+        mGender = gender;
     }
 
-    public double getmLat() {
+    public double getLat() {
         return mLat;
     }
 
-    public void setmLat(double mLat) {
-        this.mLat = mLat;
+    public void setLat(double lat) {
+        mLat = lat;
     }
 
-    public double getmLng() {
+    public double getLng() {
         return mLng;
     }
 
-    public void setmLng(double mLng) {
-        this.mLng = mLng;
+    public void setLng(double lng) {
+        mLng = lng;
     }
 
-    public double getmRadius() {
+    public double getRadius() {
         return mRadius;
     }
 
-    public void setmRadius(double mRadius) {
-        this.mRadius = mRadius;
+    public void setRadius(double radius) {
+        mRadius = radius;
     }
 
-    public String getmOrderBy() {
+    public String getOrderBy() {
         return mOrderBy;
     }
 
-    public void setmOrderBy(String mOrderBy) {
-        this.mOrderBy = mOrderBy;
+    public void setOrderBy(String orderBy) {
+        mOrderBy = orderBy;
     }
 
-    public String getmSort() {
+    public String getSort() {
         return mSort;
     }
 
-    public void setmSort(String mSort) {
-        this.mSort = mSort;
+    public void setSort(String sort) {
+        mSort = sort;
     }
 
-    public long getmLast() {
+    public long getLast() {
         return mLast;
     }
 
-    public void setmLast(long mLast) {
-        this.mLast = mLast;
+    public void setLast(long last) {
+        mLast = last;
     }
 
-    public int getmSize() {
+    public int getSize() {
         return mSize;
     }
 
-    public void setmSize(int mSize) {
-        this.mSize = mSize;
+    public void setSize(int size) {
+        mSize = size;
     }
 
     private String toTagsParam(ArrayList<String> tags) {

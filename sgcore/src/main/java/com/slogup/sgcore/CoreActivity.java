@@ -38,6 +38,6 @@ public class CoreActivity extends AppCompatActivity {
     protected void loginWithSocial(SocialClientHelper socialClientHelper, SocialClientHelper.SocialResponseCallback responseCallback) {
 
         mSocialClientHelper = socialClientHelper;
-        mSocialClientHelper.login(this, responseCallback);
+//        mSocialClientHelper.login(this, responseCallback);
     }
 }

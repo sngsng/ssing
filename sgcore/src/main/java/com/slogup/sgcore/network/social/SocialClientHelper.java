@@ -12,7 +12,7 @@ public abstract class SocialClientHelper {
 
     public interface SocialResponseCallback {
 
-        void onSuccess(String accessToken);
+        void onSuccess(String pid, String accessToken);
         void onCancel();
         void onError(String errorMsg);
     }

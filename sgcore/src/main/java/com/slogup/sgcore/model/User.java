@@ -4,10 +4,13 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 
 import com.slogup.sgcore.CoreAPIContants;
+import com.slogup.sgcore.manager.AccountManager;
 import com.slogup.sgcore.manager.CoreManager;
-import com.slogup.sgcore.network.CookieStore;
 import com.slogup.sgcore.network.CoreError;
 import com.slogup.sgcore.network.RestClient;
+import com.slogup.sgcore.network.core.SessionClientHelper;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,10 +46,44 @@ public class User extends BaseModel {
         NORMAL_ID
     }
 
+    private String mAid;
+    private String mEmail;
+    private String mPhoneNum;
+    private String mName;
+    private String mNick;
+    private String mRole;
+    private String mGender;
+    private JSONObject mBirth;
+    private boolean mIsVerifiedEmail;
+    private String mCountry;
+    private String mLanguage;
+    private boolean mIsReviewed;
+    private boolean mIsAgreedEmail;
+    private boolean mIsAgreedPhone;
+    private long mAgreedTermsAt;
+    private int mProfileId;
+    private long mCreatedAt;
+    private long mUpdatedAt;
+    private long mDeletedAt;
+    private long mPassUpdatedAt;
+    private int mId;
+
+    private JSONArray mProviders;
+    private JSONArray mLoginHistories;
+    private JSONArray mUserNotifications;
+    private JSONArray mUserPublicNotifications;
+    private JSONArray mUserImages;
+
+
+
 
     public User(Context context) {
 
         super(context);
+    }
+
+    public User() {
+
     }
 
     public static void findOne(Context context, final RestClient.RestListener listener) {
@@ -207,40 +244,7 @@ public class User extends BaseModel {
         });
     }
 
-    public static void socialLogin(Context context, final RestClient.RestListener listener) {
 
-    }
-
-    public static void logout(final Context context, final RestClient.RestListener listener) {
-
-        RestClient restService = new RestClient(context);
-        restService.request(RestClient.Method.DELETE, "accounts/session", null, new RestClient.RestListener() {
-            @Override
-            public void onBefore() {
-
-                listener.onBefore();
-            }
-
-            @Override
-            public void onSuccess(Object response) {
-
-                CookieStore.getInstance(context).removeCookie();
-                listener.onSuccess(response);
-            }
-
-            @Override
-            public void onFail(CoreError error) {
-
-                listener.onFail(error);
-            }
-
-            @Override
-            public void onError(CoreError error) {
-
-                listener.onError(error);
-            }
-        });
-    }
 
     public void addNormalIDUser(String userID, String password, JSONObject optionalParams, RestClient.RestListener listener) {
 
@@ -260,6 +264,11 @@ public class User extends BaseModel {
     public void addPhoneWithIdUser(String phoneNum, String authNum, String userID, String password, JSONObject optionalParams, RestClient.RestListener listener) {
 
         addUser(SignUpType.PHONE_ID, null, phoneNum, authNum, userID, password, optionalParams, listener);
+    }
+
+    public void addSocialUser(SocialProviderType socialProviderType, String requestToken, String accessToken, JSONObject optionalParams, RestClient.RestListener listener) {
+
+        addUser(SignUpType.SOCIAL, socialProviderType, requestToken, accessToken, null, null, optionalParams, listener);
     }
 
     public void addFacebookUser(String requestToken, String accessToken, JSONObject optionalParams, RestClient.RestListener listener) {
@@ -320,8 +329,8 @@ public class User extends BaseModel {
                 try {
                     if (aid != null && aPassword != null) {
 
-                        params.put(CoreAPIContants.UserParams.POST.AID, aid);
-                        params.put(CoreAPIContants.UserParams.POST.APASSWORD, aPassword);
+                        params.put(CoreAPIContants.User.AID, aid);
+                        params.put(CoreAPIContants.User.APASSWORD, aPassword);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -334,13 +343,13 @@ public class User extends BaseModel {
         }
 
         try {
-            params.put(CoreAPIContants.UserParams.POST.SIGNUP_TYPE, signUpTypeParam);
+            params.put(CoreAPIContants.User.SIGNUP_TYPE, signUpTypeParam);
 
             if (providerParam != null)
-                params.put(CoreAPIContants.UserParams.POST.PROVIDER, providerParam);
+                params.put(CoreAPIContants.User.PROVIDER, providerParam);
 
-            params.put(CoreAPIContants.UserParams.POST.USER_ID, uid);
-            params.put(CoreAPIContants.UserParams.POST.PASSWORD, password);
+            params.put(CoreAPIContants.User.USER_ID, uid);
+            params.put(CoreAPIContants.User.PASSWORD, password);
 
             if (optionalParams != null) {
 
@@ -357,7 +366,7 @@ public class User extends BaseModel {
         }
 
         RestClient restService = new RestClient(getContext());
-        restService.request(RestClient.Method.POST, "accounts/users", params, new RestClient.RestListener() {
+        restService.request(RestClient.Method.POST, CoreAPIContants.User.URL, params, new RestClient.RestListener() {
             @Override
             public void onBefore() {
 
@@ -366,6 +375,12 @@ public class User extends BaseModel {
 
             @Override
             public void onSuccess(Object response) {
+
+                if (response instanceof JSONObject) {
+
+                    JSONObject resJson = (JSONObject)response;
+                    AccountManager.getInstance().createUser(resJson);
+                }
 
                 listener.onSuccess(response);
             }
@@ -382,5 +397,214 @@ public class User extends BaseModel {
                 listener.onError(error);
             }
         });
+    }
+
+
+    public String getAid() {
+        return mAid;
+    }
+
+    public void setAid(String aid) {
+        mAid = aid;
+    }
+
+    public String getEmail() {
+        return mEmail;
+    }
+
+    public void setEmail(String email) {
+        mEmail = email;
+    }
+
+    public String getPhoneNum() {
+        return mPhoneNum;
+    }
+
+    public void setPhoneNum(String phoneNum) {
+        mPhoneNum = phoneNum;
+    }
+
+    public String getName() {
+        return mName;
+    }
+
+    public void setName(String name) {
+        mName = name;
+    }
+
+    public String getNick() {
+        return mNick;
+    }
+
+    public void setNick(String nick) {
+        mNick = nick;
+    }
+
+    public String getRole() {
+        return mRole;
+    }
+
+    public void setRole(String role) {
+        mRole = role;
+    }
+
+    public String getGender() {
+        return mGender;
+    }
+
+    public void setGender(String gender) {
+        mGender = gender;
+    }
+
+    public JSONObject getBirth() {
+        return mBirth;
+    }
+
+    public void setBirth(JSONObject birth) {
+        mBirth = birth;
+    }
+
+    public boolean isVerifiedEmail() {
+        return mIsVerifiedEmail;
+    }
+
+    public void setVerifiedEmail(boolean verifiedEmail) {
+        mIsVerifiedEmail = verifiedEmail;
+    }
+
+    public String getCountry() {
+        return mCountry;
+    }
+
+    public void setCountry(String country) {
+        mCountry = country;
+    }
+
+    public String getLanguage() {
+        return mLanguage;
+    }
+
+    public void setLanguage(String language) {
+        mLanguage = language;
+    }
+
+    public boolean isReviewed() {
+        return mIsReviewed;
+    }
+
+    public void setReviewed(boolean reviewed) {
+        mIsReviewed = reviewed;
+    }
+
+    public boolean isAgreedEmail() {
+        return mIsAgreedEmail;
+    }
+
+    public void setAgreedEmail(boolean agreedEmail) {
+        mIsAgreedEmail = agreedEmail;
+    }
+
+    public boolean isAgreedPhone() {
+        return mIsAgreedPhone;
+    }
+
+    public void setAgreedPhone(boolean agreedPhone) {
+        mIsAgreedPhone = agreedPhone;
+    }
+
+    public long getAgreedTermsAt() {
+        return mAgreedTermsAt;
+    }
+
+    public void setAgreedTermsAt(long agreedTermsAt) {
+        mAgreedTermsAt = agreedTermsAt;
+    }
+
+    public int getProfileId() {
+        return mProfileId;
+    }
+
+    public void setProfileId(int profileId) {
+        mProfileId = profileId;
+    }
+
+    public long getCreatedAt() {
+        return mCreatedAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        mCreatedAt = createdAt;
+    }
+
+    public long getUpdatedAt() {
+        return mUpdatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        mUpdatedAt = updatedAt;
+    }
+
+    public long getDeletedAt() {
+        return mDeletedAt;
+    }
+
+    public void setDeletedAt(long deletedAt) {
+        mDeletedAt = deletedAt;
+    }
+
+    public long getPassUpdatedAt() {
+        return mPassUpdatedAt;
+    }
+
+    public void setPassUpdatedAt(long passUpdatedAt) {
+        mPassUpdatedAt = passUpdatedAt;
+    }
+
+    public int getId() {
+        return mId;
+    }
+
+    public void setId(int id) {
+        mId = id;
+    }
+
+    public JSONArray getProviders() {
+        return mProviders;
+    }
+
+    public void setProviders(JSONArray providers) {
+        mProviders = providers;
+    }
+
+    public JSONArray getLoginHistories() {
+        return mLoginHistories;
+    }
+
+    public void setLoginHistories(JSONArray loginHistories) {
+        mLoginHistories = loginHistories;
+    }
+
+    public JSONArray getUserNotifications() {
+        return mUserNotifications;
+    }
+
+    public void setUserNotifications(JSONArray userNotifications) {
+        mUserNotifications = userNotifications;
+    }
+
+    public JSONArray getUserPublicNotifications() {
+        return mUserPublicNotifications;
+    }
+
+    public void setUserPublicNotifications(JSONArray userPublicNotifications) {
+        mUserPublicNotifications = userPublicNotifications;
+    }
+
+    public JSONArray getUserImages() {
+        return mUserImages;
+    }
+
+    public void setUserImages(JSONArray userImages) {
+        mUserImages = userImages;
     }
 }

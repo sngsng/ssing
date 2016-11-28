@@ -6,31 +6,31 @@ package slogup.ssing.Model;
 
 public class ListModel {
 
-    protected double mCreatedTime;
-    protected double mUpdatedTime;
-    protected double mDeletedTime;
+    protected long mCreatedTime;
+    protected long mUpdatedTime;
+    protected long mDeletedTime;
 
-    public double getCreatedTime() {
+    public long getCreatedTime() {
         return mCreatedTime;
     }
 
-    public void setCreatedTime(double createdTime) {
+    public void setCreatedTime(long createdTime) {
         mCreatedTime = createdTime;
     }
 
-    public double getUpdatedTime() {
+    public long getUpdatedTime() {
         return mUpdatedTime;
     }
 
-    public void setUpdatedTime(double updatedTime) {
+    public void setUpdatedTime(long updatedTime) {
         mUpdatedTime = updatedTime;
     }
 
-    public double getDeletedTime() {
+    public long getDeletedTime() {
         return mDeletedTime;
     }
 
-    public void setDeletedTime(double deletedTime) {
+    public void setDeletedTime(long deletedTime) {
         mDeletedTime = deletedTime;
     }
 }

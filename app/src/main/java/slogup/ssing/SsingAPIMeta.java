@@ -40,6 +40,10 @@ public final class SsingAPIMeta extends CoreAPIContants {
             public static final String UPDATED_AT = "updatedAt";
             public static final String DELETED_AT = "deletedAt";
             public static final String ID = "id";
+            public static final String AUTHOR = "author";
+            public static final String NICK = "nick";
+            public static final String BIRTH = "birth";
+            public static final String TOTAL_COUNT = "totalCount";
             public static final String TAG_COUNTS = "tagCounts";
             public static final String POST_ID = "postId";
             public static final String TAG_NAME = "tagName";

@@ -2,6 +2,7 @@ package com.slogup.sgcore.network.social;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -42,7 +43,9 @@ public class FacebookClientHelper extends SocialClientHelper {
             public void onSuccess(LoginResult loginResult) {
 
                 String accessToken = loginResult.getAccessToken().getToken();
-                socialClientCallback.onSuccess(accessToken);
+                String pid = loginResult.getAccessToken().getUserId();
+                Log.i(LOG_TAG, "onSuccess : " + "pid : " + pid + "  accessToken : " + accessToken);
+                socialClientCallback.onSuccess(pid, accessToken);
             }
 
             @Override

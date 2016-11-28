@@ -13,7 +13,7 @@ public class CoreManager {
     private static CoreManager sCoreManager = new CoreManager();
 
     private Meta mMeta;
-    private User mUser;
+
 
     public CoreManager() {
     }
@@ -35,10 +35,7 @@ public class CoreManager {
 
     public User getUser() {
 
-        return mUser;
+        return AccountManager.getInstance().getUser();
     }
 
-    public void setUser(User user) {
-        mUser = user;
-    }
 }

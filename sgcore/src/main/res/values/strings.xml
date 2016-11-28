@@ -6,9 +6,13 @@
     <string name="err_network">네트워크 상태를 확인해주세요.</string>
     <string name="err_server">서버에 오류가 있습니다.</string>
     <string name="err_unexpected">정의되지 않은 에러입니다.</string>
+    <string name="err_social_cancel">취소되었습니다.</string>
 
     <string name="err_no_err_msg_info_reason_no_meta">에러 메시지를 조회할 메타데이터가 없습니다.</string>
 
     <string name="facebook_app_id">1262392927152805</string>
     <string name="fb_login_protocol_scheme">1262392927152805</string>
+
+    <string name="validate_error_empty_nick">닉네임을 입력해주세요.</string>
+    <string name="validate_error_format_nick_length">닉네임을 %1$d ~ %2$d자 사이로 입력해주세요.</string>
 </resources>

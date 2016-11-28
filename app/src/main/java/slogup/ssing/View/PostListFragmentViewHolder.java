@@ -30,6 +30,7 @@ public class PostListFragmentViewHolder {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private PostListAdapter mPostListAdapater;
     private ArrayList<Post> mPosts;
+    private SwipeRefreshLayout.OnRefreshListener mRefreshListener;
 
     public PostListFragmentViewHolder(Activity activity, View rootView, ArrayList<Post> posts) {
 
@@ -39,10 +40,22 @@ public class PostListFragmentViewHolder {
 
     }
 
+    public void setRefreshListener(SwipeRefreshLayout.OnRefreshListener refreshListener) {
+        mRefreshListener = refreshListener;
+    }
+
     public void initializeView() {
 
         bindWidgets();
         setUpRecyclerView();
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                if (mRefreshListener != null) mRefreshListener.onRefresh();
+            }
+        });
     }
 
     public void startLoading() {
@@ -52,7 +65,17 @@ public class PostListFragmentViewHolder {
 
     public void stopLoading() {
 
-        mProgressBar.setVisibility(View.GONE);
+        if (mProgressBar.getVisibility() == View.VISIBLE) mProgressBar.setVisibility(View.GONE);
+    }
+
+    public void showEmptyView() {
+
+        mEmptyListTextView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideEmptyView() {
+
+        mEmptyListTextView.setVisibility(View.GONE);
     }
 
     public void updateList(ArrayList<Post> posts) {
@@ -60,6 +83,13 @@ public class PostListFragmentViewHolder {
         mPosts = posts;
         mPostListAdapater.setmPosts(mPosts);
         mPostListAdapater.notifyDataSetChanged();
+    }
+
+    public void finishRefresh() {
+
+        if (mSwipeRefreshLayout.isRefreshing())
+            mSwipeRefreshLayout.setRefreshing(false);
+
     }
 
 
@@ -81,6 +111,8 @@ public class PostListFragmentViewHolder {
 
         mPostListAdapater.notifyDataSetChanged();
     }
+
+
 
 
 }

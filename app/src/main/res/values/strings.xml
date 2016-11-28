@@ -13,5 +13,18 @@
 
 
     <string name="title_empty_post_list">등록된 글이 없습니다.</string>
+    <string name="title_sign_up_facebook">Facebook으로 시작하기</string>
+    <string name="title_sign_up_kakao">카카오톡으로 시작하기</string>
+    <string name="format_vote_count">참여 %1$d개</string>
+    <string name="format_birth">%2d년</string>
+    <string name="title_sign_up">회원가입</string>
+    <string name="title_prev">이전</string>
+    <string name="title_next">다음</string>
+    <string name="title_finish">완료</string>
+
+
+    <string name="title_hint_input_nick">닉네임을 입력해주세요.</string>
+    <string name="title_footer_terms">회원가입을 하시면 해당 서비스의 이용약관에 \n동의한 것으로 간주됩니다.</string>
+    <string name="title_finish_sign_up">회원가입이 완료되었습니다.</string>
 
 </resources>

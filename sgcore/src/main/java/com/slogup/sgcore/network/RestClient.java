@@ -224,15 +224,17 @@ public class RestClient {
         // 서버에서 응답을 주는 에러
         if (error.networkResponse != null) {
 
+
             int statusCode = error.networkResponse.statusCode;
 
             // 클라이언트 에러
-            if (statusCode >= 400 && statusCode < 500) {
+            if (statusCode < 500) {
 
                 String jsonString = null;
 
                 try {
                     jsonString = new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers));
+                    Log.i(LOG_TAG,"Error response : " + jsonString);
                 } catch (UnsupportedEncodingException e) {
 //                    e.printStackTrace();
                 }

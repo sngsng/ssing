@@ -26,12 +26,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/post_item_icon_imageview"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@drawable/ic_default_profile" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -60,7 +60,6 @@
                     android:layout_marginTop="4dp"
                     android:textColor="@color/colorSecondaryText"
                     android:textSize="12sp"
-                    android:textStyle="bold"
                     tools:text="방금 전" />
 
 
@@ -90,7 +89,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
-                android:textStyle="bold"
                 tools:text="참여 1000개" />
 
             <Space
@@ -99,6 +97,8 @@
                 android:layout_height="wrap_content" />
 
             <Button
+                android:minWidth="0dp"
+
                 android:id="@+id/post_item_detail_button"
                 android:textSize="13sp"
                 style="@style/Base.Widget.AppCompat.Button.Borderless"

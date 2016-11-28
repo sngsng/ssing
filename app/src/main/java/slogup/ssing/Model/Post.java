@@ -3,17 +3,17 @@ package slogup.ssing.Model;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.slogup.sgcore.network.CoreError;
 import com.slogup.sgcore.network.RestClient;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
-import java.util.Objects;
 
 import slogup.ssing.SsingAPIMeta;
 
@@ -26,85 +26,47 @@ import slogup.ssing.SsingAPIMeta;
 public class Post extends ListModel{
 
 
+    private static final String LOG_TAG = Post.class.getSimpleName();
     private int mPostId;
     private int mAuthorId;
-    private String mAuthorNickName;
     private String mPostBody;
-    private String mGender;
+
+    private String mAuthorNickName;
+    private String mAuthorGender;
+    private String mAuthorBirth;
     private int mBirthStart;
     private int mBirthEnd;
-    private int mTagCount;
-
+    private int mTotalVoteCount;
 
     public Post(JSONObject jsonObject) {
 
-    }
+        try {
+            mPostId = jsonObject.getInt(SsingAPIMeta.Posts.Response.ID);
+            mAuthorId = jsonObject.getInt(SsingAPIMeta.Posts.Response.AUTHOR_ID);
+            mPostBody = jsonObject.getString(SsingAPIMeta.Posts.Response.BODY);
 
-    public int getPostId() {
-        return mPostId;
-    }
+            mCreatedTime = jsonObject.getLong(SsingAPIMeta.Posts.Response.CREATED_AT);
+            mUpdatedTime = jsonObject.getLong(SsingAPIMeta.Posts.Response.UPDATED_AT);
 
-    public void setPostId(int postId) {
-        mPostId = postId;
-    }
+            mTotalVoteCount = jsonObject.getInt(SsingAPIMeta.Posts.Response.TOTAL_COUNT);
 
-    public int getAuthorId() {
-        return mAuthorId;
-    }
+            JSONObject authorJson = jsonObject.getJSONObject(SsingAPIMeta.Posts.Response.AUTHOR);
+            mAuthorNickName = authorJson.getString(SsingAPIMeta.Posts.Response.NICK);
+            mAuthorGender = authorJson.getString(SsingAPIMeta.Posts.Response.GENDER);
+            mAuthorBirth = authorJson.getString(SsingAPIMeta.Posts.Response.BIRTH);
 
-    public void setAuthorId(int authorId) {
-        mAuthorId = authorId;
-    }
-
-    public String getAuthorNickName() {
-        return mAuthorNickName;
-    }
-
-    public void setAuthorNickName(String authorNickName) {
-        mAuthorNickName = authorNickName;
-    }
-
-    public String getPostBody() {
-        return mPostBody;
-    }
-
-    public void setPostBody(String postBody) {
-        mPostBody = postBody;
-    }
-
-    public String getGender() {
-        return mGender;
-    }
-
-    public void setGender(String gender) {
-        mGender = gender;
-    }
-
-    public int getBirthStart() {
-        return mBirthStart;
-    }
-
-    public void setBirthStart(int birthStart) {
-        mBirthStart = birthStart;
-    }
-
-    public int getBirthEnd() {
-        return mBirthEnd;
-    }
-
-    public void setBirthEnd(int birthEnd) {
-        mBirthEnd = birthEnd;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void findOne() {
 
     }
 
-    private static void findAll(Context context, @Nullable PostSearchFilter searchFilter) {
-
+    public static void findAll(Context context, @Nullable PostSearchFilter searchFilter, final RestClient.RestListener listener) {
 
         RestClient restClient = new RestClient(context);
-
         String url;
 
         // 파라미터가 있을경우
@@ -142,21 +104,52 @@ public class Post extends ListModel{
             @Override
             public void onBefore() {
 
+                listener.onBefore();
             }
 
             @Override
             public void onSuccess(Object response) {
 
+                Log.i(LOG_TAG, response.toString());
+                ArrayList<Post> posts = new ArrayList<>();
+
+                if (response instanceof JSONObject) {
+
+                    try {
+                        JSONArray rows = ((JSONObject) response).getJSONArray(SsingAPIMeta.Posts.Response.ROWS);
+
+                        for (int i = 0; i < rows.length(); i++) {
+
+                            JSONObject row = rows.getJSONObject(i);
+                            Post post = new Post(row);
+                            posts.add(post);
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                listener.onSuccess(posts);
             }
 
             @Override
             public void onFail(CoreError error) {
+
+                if (error.statusCode == 404) {
+
+                    listener.onSuccess(new ArrayList<Post>());
+                }
+                else {
+
+                    listener.onFail(error);
+                }
 
             }
 
             @Override
             public void onError(CoreError error) {
 
+                listener.onError(error);
             }
         });
     }
@@ -164,4 +157,86 @@ public class Post extends ListModel{
     public static void addPost() {
 
     }
+
+    public int getPostId() {
+        return mPostId;
+    }
+
+    public void setPostId(int postId) {
+        mPostId = postId;
+    }
+
+    public int getAuthorId() {
+        return mAuthorId;
+    }
+
+    public void setAuthorId(int authorId) {
+        mAuthorId = authorId;
+    }
+
+    public String getAuthorNickName() {
+        return mAuthorNickName;
+    }
+
+    public void setAuthorNickName(String authorNickName) {
+        mAuthorNickName = authorNickName;
+    }
+
+    public String getPostBody() {
+        return mPostBody;
+    }
+
+    public void setPostBody(String postBody) {
+        mPostBody = postBody;
+    }
+
+    public String getGender() {
+        return mAuthorGender;
+    }
+
+    public void setGender(String gender) {
+        mAuthorGender = gender;
+    }
+
+    public int getBirthStart() {
+        return mBirthStart;
+    }
+
+    public void setBirthStart(int birthStart) {
+        mBirthStart = birthStart;
+    }
+
+    public int getBirthEnd() {
+        return mBirthEnd;
+    }
+
+    public void setBirthEnd(int birthEnd) {
+        mBirthEnd = birthEnd;
+    }
+
+    public String getAuthorGender() {
+        return mAuthorGender;
+    }
+
+    public void setAuthorGender(String authorGender) {
+        mAuthorGender = authorGender;
+    }
+
+    public String getAuthorBirth() {
+        return mAuthorBirth;
+    }
+
+    public void setAuthorBirth(String authorBirth) {
+        mAuthorBirth = authorBirth;
+    }
+
+    public int getTotalVoteCount() {
+        return mTotalVoteCount;
+    }
+
+    public void setTotalVoteCount(int totalVoteCount) {
+        mTotalVoteCount = totalVoteCount;
+    }
+
+
 }

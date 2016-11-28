@@ -11,8 +11,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import slogup.ssing.Model.Post;
 import slogup.ssing.R;
+import slogup.ssing.Util.TimeUtils;
 
 /**
  * Created by sngjoong on 2016. 11. 27..
@@ -46,6 +48,14 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostLi
 
         Post post = mPosts.get(position);
 
+        holder.mPostBodyTextView.setText(post.getPostBody());
+        holder.mAuthorNickNameTextView.setText(post.getAuthorNickName());
+
+        String voteCountFormatString = String.format(mContext.getString(R.string.format_vote_count), post.getTotalVoteCount());
+        holder.mTotalVoteCountTextView.setText(voteCountFormatString);
+
+        String pastTimeString = TimeUtils.toSimplePastTimeStringFormat(post.getCreatedTime());
+        holder.mPostDateTextView.setText(pastTimeString);
 
     }
 
@@ -57,22 +67,22 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostLi
 
     class PostListViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView mAuthorIconImageView;
+        CircleImageView mAuthorIconImageView;
         TextView mAuthorNickNameTextView;
         TextView mPostDateTextView;
         TextView mPostBodyTextView;
-        TextView mTagCountTextView;
+        TextView mTotalVoteCountTextView;
         Button mPostDetailButton;
 
         PostListViewHolder(View itemView) {
 
             super(itemView);
 
-            mAuthorIconImageView = (ImageView)itemView.findViewById(R.id.post_item_icon_imageview);
+            mAuthorIconImageView = (CircleImageView)itemView.findViewById(R.id.post_item_icon_imageview);
             mAuthorNickNameTextView = (TextView)itemView.findViewById(R.id.post_item_nick_name_textview);
             mPostDateTextView = (TextView)itemView.findViewById(R.id.post_item_date_textview);
             mPostBodyTextView = (TextView)itemView.findViewById(R.id.post_item_body_textview);
-            mTagCountTextView = (TextView)itemView.findViewById(R.id.post_item_tag_count_textview);
+            mTotalVoteCountTextView = (TextView)itemView.findViewById(R.id.post_item_tag_count_textview);
             mPostDetailButton = (Button)itemView.findViewById(R.id.post_item_detail_button);
 
 

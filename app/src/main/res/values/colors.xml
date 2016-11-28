@@ -14,5 +14,8 @@
     <color name="colorDefaultBackground">#e2e2e3</color>
     <color name="colorDefaultBorder">#d9d9d9</color>
     <color name="colorBlue">#2588ea</color>
+    <color name="colorKakao">#f8e71c</color>
+    <color name="colorKakaoText">#030303</color>
+    <color name="colorFacebook">#3b579d</color>
 
 </resources>
