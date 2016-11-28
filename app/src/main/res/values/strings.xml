@@ -26,5 +26,7 @@
     <string name="title_hint_input_nick">닉네임을 입력해주세요.</string>
     <string name="title_footer_terms">회원가입을 하시면 해당 서비스의 이용약관에 \n동의한 것으로 간주됩니다.</string>
     <string name="title_finish_sign_up">회원가입이 완료되었습니다.</string>
+    <string name="title_login_success">로그인 되었습니다.</string>
+    <string name="title_logout_success">로그아웃 되었습니다.</string>
 
 </resources>

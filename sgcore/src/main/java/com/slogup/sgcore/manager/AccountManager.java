@@ -1,7 +1,10 @@
 package com.slogup.sgcore.manager;
 
+import android.content.Context;
+
 import com.slogup.sgcore.CoreAPIContants;
 import com.slogup.sgcore.model.User;
+import com.slogup.sgcore.network.CookieStore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,10 +27,6 @@ public class AccountManager {
     public User getUser() {
 
         return mUser;
-    }
-
-    private void setUser(User user) {
-        mUser = user;
     }
 
     public void createUser(JSONObject jsonObject) {
@@ -120,6 +119,15 @@ public class AccountManager {
     public void deleteUser() {
 
         setUser(null);
+    }
+
+    public boolean isLoggedIn(Context context) {
+
+        return CookieStore.getInstance().hasCookie(context);
+    }
+
+    private void setUser(User user) {
+        mUser = user;
     }
 
 }

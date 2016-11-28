@@ -128,6 +128,7 @@ public class SignUpDialogFragment extends DialogFragment {
             @Override
             public void onSuccessLogin(Object response) {
 
+                CommonUtils.showToast(getActivity(), getActivity().getString(R.string.title_login_success));
                 dismiss();
             }
 

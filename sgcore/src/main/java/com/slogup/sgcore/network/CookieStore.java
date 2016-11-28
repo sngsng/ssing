@@ -11,43 +11,36 @@ import com.slogup.sgcore.CoreAPIContants;
  */
 public class CookieStore {
 
-    private static Context sContext;
-    private static CookieStore sCookieStore;
 
-    public CookieStore() {
-    }
+    private static CookieStore sCookieStore = new CookieStore();
 
-    public static CookieStore getInstance(Context context) {
 
-        sContext = context;
-        if (sCookieStore == null) {
+    public static CookieStore getInstance() {
 
-            sCookieStore = new CookieStore();
-        }
         return sCookieStore;
     }
 
-    public boolean hasCookie() {
+    public boolean hasCookie(Context context) {
 
-        return !getCookie().isEmpty();
+        return !getCookie(context).isEmpty();
 
     }
 
-    public void setCookie(String cookie) {
+    public void setCookie(Context context, String cookie) {
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(sContext);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences.edit().putString(CoreAPIContants.RootUrl, cookie).apply();
     }
 
-    public void removeCookie() {
+    public void removeCookie(Context context) {
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(sContext);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         sharedPreferences.edit().remove(CoreAPIContants.RootUrl).apply();
     }
 
-    public String getCookie() {
+    public String getCookie(Context context) {
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(sContext);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getString(CoreAPIContants.RootUrl, "");
     }
 }

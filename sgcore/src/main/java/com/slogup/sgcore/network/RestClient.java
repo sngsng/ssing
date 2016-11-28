@@ -276,13 +276,13 @@ public class RestClient {
         Map<String, String> reqHeaders = new HashMap<>();
 
         Log.d(LOG_TAG, "getHeaders");
-        CookieStore cookieStore = CookieStore.getInstance(mContext);
+        CookieStore cookieStore = CookieStore.getInstance();
 
-        if (cookieStore.hasCookie()) {
+        if (cookieStore.hasCookie(mContext)) {
 
-            reqHeaders.put(COOKIE, cookieStore.getCookie());
+            reqHeaders.put(COOKIE, cookieStore.getCookie(mContext));
 
-            Log.d(LOG_TAG, "Request Cookie : " + cookieStore.getCookie());
+            Log.d(LOG_TAG, "Request Cookie : " + cookieStore.getCookie(mContext));
         }
 
         return reqHeaders;
@@ -294,7 +294,7 @@ public class RestClient {
 
         if (respHeaders.containsKey(SET_COOKIE)) {
 
-            CookieStore.getInstance(mContext).setCookie(respHeaders.get(SET_COOKIE));
+            CookieStore.getInstance().setCookie(mContext, respHeaders.get(SET_COOKIE));
             Log.d(LOG_TAG, "쿠키 저장");
         }
     }

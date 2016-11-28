@@ -121,7 +121,8 @@ public class SessionClientHelper {
             @Override
             public void onSuccess(Object response) {
 
-                CookieStore.getInstance(context).removeCookie();
+                CookieStore.getInstance().removeCookie(context);
+                AccountManager.getInstance().deleteUser();
                 listener.onSuccess(response);
             }
 
