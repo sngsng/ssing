@@ -123,7 +123,14 @@ public class AccountManager {
 
     public boolean isLoggedIn(Context context) {
 
-        return CookieStore.getInstance().hasCookie(context);
+        if (CookieStore.getInstance().hasCookie(context)) {
+
+            return mUser != null;
+        }
+        else {
+
+            return false;
+        }
     }
 
     private void setUser(User user) {

@@ -21,6 +21,7 @@
     <string name="title_prev">이전</string>
     <string name="title_next">다음</string>
     <string name="title_finish">완료</string>
+    <string name="title_logout">로그아웃</string>
 
 
     <string name="title_hint_input_nick">닉네임을 입력해주세요.</string>
@@ -28,5 +29,13 @@
     <string name="title_finish_sign_up">회원가입이 완료되었습니다.</string>
     <string name="title_login_success">로그인 되었습니다.</string>
     <string name="title_logout_success">로그아웃 되었습니다.</string>
+
+    <string name="title_button_post">글쓰기</string>
+    <string name="title_button_my_activity">활동내역</string>
+    <string name="title_button_my_settings">설정</string>
+    <string name="title_button_start">시작하기</string>
+
+    <string name="kakao_app_key">7ccf8f2cd9d5be9810682bc39ce6f38c</string>
+    <string name="facebook_app_id">1262392927152805</string>
 
 </resources>

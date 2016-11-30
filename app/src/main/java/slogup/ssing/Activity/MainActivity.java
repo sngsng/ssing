@@ -7,11 +7,19 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 
+import com.slogup.sgcore.GlobalApplication;
+import com.slogup.sgcore.manager.AccountManager;
+import com.slogup.sgcore.network.CoreError;
+import com.slogup.sgcore.network.RestClient;
+import com.slogup.sgcore.network.core.SessionClientHelper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import slogup.ssing.Adapter.TabPagerAdapter;
 import slogup.ssing.Fragment.PostListFragment;
 import slogup.ssing.Fragment.SignUpDialogFragment;
+import slogup.ssing.Util.CommonUtils;
 import slogup.ssing.View.CustomTabLayout;
 import slogup.ssing.View.MainDrawerViewHolder;
 
@@ -23,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     private PostListFragment mLatestOrderPostListFragment;
     private PostListFragment mDistanceOrderPostListFragment;
-    private SignUpDialogFragment mSignUpDialogFragment = SignUpDialogFragment.newInstance();
+    private MainDrawerViewHolder mMainDrawerViewHolder;
+    private SignUpDialogFragment mSignUpDialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,18 +42,73 @@ public class MainActivity extends AppCompatActivity {
 
         setUpDrawer();
         setUpTabLayout();
+        GlobalApplication.setCurrentActivity(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mMainDrawerViewHolder.updateDrawerByLoginState();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mMainDrawerViewHolder.updateDrawerByLoginState();
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mSignUpDialogFragment.onActivityResult(requestCode, resultCode, data);
+
+        if (mSignUpDialogFragment != null)
+            mSignUpDialogFragment.onActivityResult(requestCode, resultCode, data);
+
+        mMainDrawerViewHolder.updateDrawerByLoginState();
     }
 
     private void setUpDrawer() {
 
-        MainDrawerViewHolder mainDrawerViewHolder = new MainDrawerViewHolder(this);
-        mainDrawerViewHolder.initializeDrawerLayout();
+        mMainDrawerViewHolder = new MainDrawerViewHolder(this, new MainDrawerViewHolder.DrawerMenuButtonCallback() {
+            @Override
+            public void onLoginButtonClick() {
+
+                showLogginDialog();
+            }
+
+            @Override
+            public void onLogoutButtonClick() {
+
+                logout();
+            }
+
+            @Override
+            public void onAddPostButtonClick() {
+
+                if (!isLoggedIn()) {
+
+                }
+            }
+
+            @Override
+            public void onMyActivityButtonClick() {
+
+                if (!isLoggedIn()) {
+
+                }
+            }
+
+            @Override
+            public void onSettingsButtonClick() {
+
+                if (!isLoggedIn()) {
+
+                }
+            }
+        });
+        mMainDrawerViewHolder.initializeDrawerLayout();
     }
 
     private void setUpTabLayout() {
@@ -72,5 +136,59 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setBoldTypeFaceEnabled(true);
         tabLayout.setupWithViewPager(pager);
 
+    }
+
+    private boolean isLoggedIn() {
+
+        if (AccountManager.getInstance().isLoggedIn(this)) {
+            return true;
+        }
+        else {
+
+            showLogginDialog();
+        }
+
+        return false;
+    }
+
+    private void showLogginDialog() {
+
+        mSignUpDialogFragment = SignUpDialogFragment.newInstance();
+        mSignUpDialogFragment.setDismissCallback(new SignUpDialogFragment.DismissCallback() {
+            @Override
+            public void onDismiss() {
+
+                mMainDrawerViewHolder.updateDrawerByLoginState();
+            }
+        });
+        mSignUpDialogFragment.show(getSupportFragmentManager(), SignUpDialogFragment.class.getSimpleName());
+    }
+
+    private void logout() {
+
+        SessionClientHelper.logout(this, new RestClient.RestListener() {
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onSuccess(Object response) {
+
+                mMainDrawerViewHolder.updateDrawerByLoginState();
+            }
+
+            @Override
+            public void onFail(CoreError error) {
+
+                CommonUtils.showToast(getApplicationContext(), error.errorMsg);
+            }
+
+            @Override
+            public void onError(CoreError error) {
+
+                CommonUtils.showToast(getApplicationContext(), error.errorMsg);
+            }
+        });
     }
 }

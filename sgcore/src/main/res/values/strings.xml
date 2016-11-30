@@ -9,8 +9,6 @@
     <string name="err_social_cancel">취소되었습니다.</string>
 
     <string name="err_no_err_msg_info_reason_no_meta">에러 메시지를 조회할 메타데이터가 없습니다.</string>
-
-    <string name="facebook_app_id">1262392927152805</string>
     <string name="fb_login_protocol_scheme">1262392927152805</string>
 
     <string name="validate_error_empty_nick">닉네임을 입력해주세요.</string>

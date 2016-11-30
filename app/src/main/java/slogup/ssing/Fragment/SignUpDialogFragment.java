@@ -1,6 +1,7 @@
 package slogup.ssing.Fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.slogup.sgcore.network.CoreError;
 import com.slogup.sgcore.network.RestClient;
 import com.slogup.sgcore.network.core.SessionClientHelper;
 import com.slogup.sgcore.network.social.FacebookClientHelper;
+import com.slogup.sgcore.network.social.KakaoClientHelper;
 import com.slogup.sgcore.network.social.SocialClientHelper;
 import com.slogup.sgcore.util.Utils;
 
@@ -26,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import me.relex.circleindicator.CircleIndicator;
+import slogup.ssing.Activity.MainActivity;
 import slogup.ssing.Adapter.SignUpPagerAdapter;
 import slogup.ssing.R;
 import slogup.ssing.Util.CommonUtils;
@@ -58,6 +61,7 @@ public class SignUpDialogFragment extends DialogFragment {
     private int mSelectedBirth;
     private String mSelectedNick;
     private User.SocialProviderType mProcessingProviderType;
+    private DismissCallback mDismissCallback;
 
     private final int[] LAYOUT_RESOURCE_IDS = {R.layout.view_sign_up_gender_input, R.layout.view_sign_up_birth_input, R.layout.view_sign_up_nick_input};
 
@@ -70,8 +74,8 @@ public class SignUpDialogFragment extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.i(LOG_TAG, getActivity() + "");
         mFacebookClientHelper = new FacebookClientHelper();
+        mKakaoClientHelper = new KakaoClientHelper();
     }
 
     @Override
@@ -92,6 +96,7 @@ public class SignUpDialogFragment extends DialogFragment {
 
         super.onActivityResult(requestCode, resultCode, data);
         mFacebookClientHelper.onActivityResult(requestCode, resultCode, data);
+        mKakaoClientHelper.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -103,6 +108,16 @@ public class SignUpDialogFragment extends DialogFragment {
         setUpViewPager();
 
         return rootView;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (mDismissCallback != null) mDismissCallback.onDismiss();
+    }
+
+    public void setDismissCallback(DismissCallback dismissCallback) {
+        mDismissCallback = dismissCallback;
     }
 
     private void bindWidgets(View rootView) {
@@ -256,6 +271,7 @@ public class SignUpDialogFragment extends DialogFragment {
             public void onClick(View view) {
 
                 mProcessingProviderType = User.SocialProviderType.KAKAO;
+                loginWithSocial(mKakaoClientHelper);
             }
         });
 
@@ -323,5 +339,12 @@ public class SignUpDialogFragment extends DialogFragment {
         mViewPager.setVisibility(View.GONE);
         mLoginContainer.setVisibility(View.VISIBLE);
         mPageControlContainer.setVisibility(View.GONE);
+    }
+
+
+
+    public interface DismissCallback {
+
+        void onDismiss();
     }
 }

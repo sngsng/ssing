@@ -17,5 +17,7 @@
     <color name="colorKakao">#f8e71c</color>
     <color name="colorKakaoText">#030303</color>
     <color name="colorFacebook">#3b579d</color>
+    <color name="colorSignUpButtonBackground">#32ffffff</color>
+    <color name="colorSignUpButtonBackgroundSelected">#96ffffff</color>
 
 </resources>
