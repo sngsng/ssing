@@ -1,11 +1,9 @@
 package com.slogup.sgcore.manager;
 
 import android.content.Context;
-
 import com.slogup.sgcore.CoreAPIContants;
 import com.slogup.sgcore.model.User;
 import com.slogup.sgcore.network.CookieStore;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

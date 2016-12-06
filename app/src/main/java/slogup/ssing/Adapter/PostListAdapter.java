@@ -23,6 +23,7 @@ import slogup.ssing.Util.TimeUtils;
 public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostListViewHolder>{
 
     private ArrayList<Post> mPosts = new ArrayList<>();
+    private ListItemButtonCallback mListItemButtonCallback;
     private Context mContext;
 
     public PostListAdapter(Context context, ArrayList<Post> posts) {
@@ -30,6 +31,10 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostLi
         mContext = context;
         mPosts = posts;
 
+    }
+
+    public void setListItemButtonCallback(ListItemButtonCallback listItemButtonCallback) {
+        mListItemButtonCallback = listItemButtonCallback;
     }
 
     public void setmPosts(ArrayList<Post> mPosts) {
@@ -78,17 +83,33 @@ public class PostListAdapter extends RecyclerView.Adapter<PostListAdapter.PostLi
 
             super(itemView);
 
-            mAuthorIconImageView = (CircleImageView)itemView.findViewById(R.id.post_item_icon_imageview);
-            mAuthorNickNameTextView = (TextView)itemView.findViewById(R.id.post_item_nick_name_textview);
-            mPostDateTextView = (TextView)itemView.findViewById(R.id.post_item_date_textview);
+            mAuthorIconImageView = (CircleImageView)itemView.findViewById(R.id.post_header_icon_imageview);
+            mAuthorNickNameTextView = (TextView)itemView.findViewById(R.id.post_header_nick_name_textview);
+            mPostDateTextView = (TextView)itemView.findViewById(R.id.post_header_date_textview);
             mPostBodyTextView = (TextView)itemView.findViewById(R.id.post_item_body_textview);
             mTotalVoteCountTextView = (TextView)itemView.findViewById(R.id.post_item_tag_count_textview);
             mPostDetailButton = (Button)itemView.findViewById(R.id.post_item_detail_button);
+
+
+            mPostDetailButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (mListItemButtonCallback != null) {
+
+                        mListItemButtonCallback.onPostDetailButtonClick(getAdapterPosition());
+                    }
+                }
+            });
 
 
         }
     }
 
 
+    public interface ListItemButtonCallback {
+
+        void onPostDetailButtonClick(int position);
+    }
 
 }

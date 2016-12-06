@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import slogup.ssing.SsingAPIMeta;
+import slogup.ssing.Network.SsingAPIMeta;
 
 /**
  * Created by sngjoong on 2016. 11. 28..

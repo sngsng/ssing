@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.slogup.sgcore.network.CoreError;
+import com.slogup.sgcore.network.RestClient;
+
 import java.util.ArrayList;
 
 import slogup.ssing.Adapter.PostListAdapter;
@@ -31,6 +34,7 @@ public class PostListFragmentViewHolder {
     private PostListAdapter mPostListAdapater;
     private ArrayList<Post> mPosts;
     private SwipeRefreshLayout.OnRefreshListener mRefreshListener;
+    private PostClickCallback mPostClickCallback;
 
     public PostListFragmentViewHolder(Activity activity, View rootView, ArrayList<Post> posts) {
 
@@ -38,6 +42,10 @@ public class PostListFragmentViewHolder {
         mRootView = rootView;
         mPosts = posts;
 
+    }
+
+    public void setPostClickCallback(PostClickCallback postClickCallback) {
+        mPostClickCallback = postClickCallback;
     }
 
     public void setRefreshListener(SwipeRefreshLayout.OnRefreshListener refreshListener) {
@@ -104,15 +112,28 @@ public class PostListFragmentViewHolder {
     private void setUpRecyclerView() {
 
         mPostListAdapater = new PostListAdapter(mCurrentActivity, mPosts);
+        mPostListAdapater.setListItemButtonCallback(new PostListAdapter.ListItemButtonCallback() {
+            @Override
+            public void onPostDetailButtonClick(int position) {
+
+                if (mPostClickCallback != null) {
+
+                    Post post = mPosts.get(position);
+                    mPostClickCallback.onPostDetailClick(post);
+                }
+            }
+        });
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mCurrentActivity));
         mRecyclerView.addItemDecoration(new RecyclerViewVerticalSpaceDecoration(DEFAULT_VERTICAL_MARGIN));
         mRecyclerView.setAdapter(mPostListAdapater);
-
         mPostListAdapater.notifyDataSetChanged();
     }
 
 
+    public interface PostClickCallback {
 
+        void onPostDetailClick(Post post);
+    }
 
 }

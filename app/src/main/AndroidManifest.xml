@@ -34,31 +34,31 @@
         <!-- Kakao SDK -->
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="@string/kakao_app_key" />
+            android:value="@string/kakao_app_key"/>
 
-        <!-- Kakao Activity  -->
+        <!-- Kakao Activity -->
         <activity
             android:name="com.kakao.auth.authorization.authcode.KakaoWebViewActivity"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
-
-
-
-    <activity android:name=".Activity.SplashActivity">
+        <activity android:name=".Activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity android:name=".Activity.MainActivity">
-
+        </activity>
+        <activity android:name=".Activity.PostDetailActivity">
+        </activity>
+        <activity android:name=".Activity.AddPostActivity">
         </activity>
     </application>
 

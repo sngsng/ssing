@@ -1,4 +1,4 @@
-package slogup.ssing;
+package slogup.ssing.Network;
 
 import com.slogup.sgcore.CoreAPIContants;
 
@@ -7,6 +7,21 @@ import com.slogup.sgcore.CoreAPIContants;
  */
 
 public final class SsingAPIMeta extends CoreAPIContants {
+
+    public class Vote {
+
+        public static final String URL = "ssing/vote";
+
+        public class Request {
+
+            public static final String POST_ID = "postId";
+            public static final String TAG_NAME = "tagName";
+        }
+
+        public class Response {
+
+        }
+    }
 
     public class Posts {
 
@@ -47,8 +62,12 @@ public final class SsingAPIMeta extends CoreAPIContants {
             public static final String TAG_COUNTS = "tagCounts";
             public static final String POST_ID = "postId";
             public static final String TAG_NAME = "tagName";
+            public static final String NAME = "name";
             public static final String COUNT = "count";
             public static final String COMMENTS = "comments";
+            public static final String COMMENT_ID = "commentId";
+            public static final String TAGS = "tags";
+            public static final String TAG_IMAGES = "tagImages";
         }
 
 

@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 
-import com.slogup.sgcore.GlobalApplication;
 import com.slogup.sgcore.manager.AccountManager;
 import com.slogup.sgcore.network.CoreError;
 import com.slogup.sgcore.network.RestClient;
@@ -25,9 +25,11 @@ import slogup.ssing.View.MainDrawerViewHolder;
 
 import slogup.ssing.R;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static long sBackPressedTime;
+    private static final int BACK_PRESS_TIME_DELAY = 2000;
 
     private PostListFragment mLatestOrderPostListFragment;
     private PostListFragment mDistanceOrderPostListFragment;
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
         setUpDrawer();
         setUpTabLayout();
-        GlobalApplication.setCurrentActivity(this);
+
     }
 
     @Override
@@ -67,6 +69,27 @@ public class MainActivity extends AppCompatActivity {
             mSignUpDialogFragment.onActivityResult(requestCode, resultCode, data);
 
         mMainDrawerViewHolder.updateDrawerByLoginState();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+
+        if (mMainDrawerViewHolder.isDrawerOpen()) {
+
+            mMainDrawerViewHolder.toggleDrawer();
+        }
+        else {
+            if (sBackPressedTime + BACK_PRESS_TIME_DELAY > System.currentTimeMillis()) {
+
+                super.onBackPressed();
+
+            } else {
+                Toast.makeText(getBaseContext(), getString(R.string.title_ask_app_exit),
+                        Toast.LENGTH_SHORT).show();
+            }
+            sBackPressedTime = System.currentTimeMillis();
+        }
     }
 
     private void setUpDrawer() {

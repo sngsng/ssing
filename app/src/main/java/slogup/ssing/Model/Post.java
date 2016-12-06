@@ -2,6 +2,8 @@ package slogup.ssing.Model;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -15,19 +17,20 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import slogup.ssing.SsingAPIMeta;
+import slogup.ssing.Network.SsingAPIMeta;
 
 /**
  * Created by sngjoong on 2016. 11. 27..
  */
 
 
+public class Post implements Parcelable {
 
-public class Post extends ListModel{
-
-
+    private long mCreatedTime;
+    private long mUpdatedTime;
+    private long mDeletedTime;
     private static final String LOG_TAG = Post.class.getSimpleName();
-    private int mPostId;
+    private int mId;
     private int mAuthorId;
     private String mPostBody;
 
@@ -38,31 +41,110 @@ public class Post extends ListModel{
     private int mBirthEnd;
     private int mTotalVoteCount;
 
+    private ArrayList<Tag> mTags;
+    private ArrayList<Comment> mComments;
+
+
+
     public Post(JSONObject jsonObject) {
 
         try {
-            mPostId = jsonObject.getInt(SsingAPIMeta.Posts.Response.ID);
+            mId = jsonObject.getInt(SsingAPIMeta.Posts.Response.ID);
             mAuthorId = jsonObject.getInt(SsingAPIMeta.Posts.Response.AUTHOR_ID);
             mPostBody = jsonObject.getString(SsingAPIMeta.Posts.Response.BODY);
 
             mCreatedTime = jsonObject.getLong(SsingAPIMeta.Posts.Response.CREATED_AT);
             mUpdatedTime = jsonObject.getLong(SsingAPIMeta.Posts.Response.UPDATED_AT);
 
-            mTotalVoteCount = jsonObject.getInt(SsingAPIMeta.Posts.Response.TOTAL_COUNT);
+            // Post GETS 응답때만 옴 (총 투표수)
+            if (jsonObject.has(SsingAPIMeta.Posts.Response.TOTAL_COUNT)) {
+
+                mTotalVoteCount = jsonObject.getInt(SsingAPIMeta.Posts.Response.TOTAL_COUNT);
+            }
+
 
             JSONObject authorJson = jsonObject.getJSONObject(SsingAPIMeta.Posts.Response.AUTHOR);
             mAuthorNickName = authorJson.getString(SsingAPIMeta.Posts.Response.NICK);
             mAuthorGender = authorJson.getString(SsingAPIMeta.Posts.Response.GENDER);
             mAuthorBirth = authorJson.getString(SsingAPIMeta.Posts.Response.BIRTH);
 
+            // POST GET 응답때만옴 (태그리스트)
+            if (jsonObject.has(SsingAPIMeta.Posts.Response.TAG_COUNTS)) {
+
+                JSONArray tagCountsJson = jsonObject.getJSONArray(SsingAPIMeta.Posts.Response.TAG_COUNTS);
+                ArrayList<Tag> tags = new ArrayList<>();
+
+                for (int i = 0; i < tagCountsJson.length(); i++) {
+
+                    JSONObject tagJson = tagCountsJson.getJSONObject(i);
+                    Tag tag = new Tag(tagJson);
+                    tags.add(tag);
+                }
+
+                mTags = tags;
+
+            }
+
+            // POST GET 응답때만옴 (댓글리스트)
+            if (jsonObject.has(SsingAPIMeta.Posts.Response.COMMENTS)) {
+
+                JSONArray commentsJson = jsonObject.getJSONArray(SsingAPIMeta.Posts.Response.COMMENTS);
+                ArrayList<Comment> comments = new ArrayList<>();
+
+                for (int i = 0; i < commentsJson.length(); i++) {
+
+                    JSONObject commentJson = commentsJson.getJSONObject(i);
+                    Comment comment = new Comment(commentJson);
+                    comments.add(comment);
+                }
+                mComments = comments;
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public static void findOne() {
+    public static void findOne(Context context, int postId, final RestClient.RestListener listener) {
+
+        RestClient restClient = new RestClient(context);
+        String url = SsingAPIMeta.Posts.URL + "/" + Integer.toString(postId);
+
+        restClient.request(RestClient.Method.GET, url, null, new RestClient.RestListener() {
+            @Override
+            public void onBefore() {
+
+                listener.onBefore();
+            }
+
+            @Override
+            public void onSuccess(Object response) {
+
+                if (response instanceof JSONObject) {
+
+                    JSONObject resJson = (JSONObject) response;
+                    Post post = new Post(resJson);
+                    listener.onSuccess(post);
+                }
+            }
+
+            @Override
+            public void onFail(CoreError error) {
+
+                listener.onFail(error);
+
+            }
+
+            @Override
+            public void onError(CoreError error) {
+
+                listener.onError(error);
+            }
+        });
+
 
     }
+
 
     public static void findAll(Context context, @Nullable PostSearchFilter searchFilter, final RestClient.RestListener listener) {
 
@@ -83,7 +165,7 @@ public class Post extends ListModel{
                     Object value = searchQueries.get(key);
                     if (value instanceof String) {
 
-                        String valueString = (String)value;
+                        String valueString = (String) value;
                         uriBuilder.appendQueryParameter(key, valueString);
                     }
 
@@ -138,8 +220,7 @@ public class Post extends ListModel{
                 if (error.statusCode == 404) {
 
                     listener.onSuccess(new ArrayList<Post>());
-                }
-                else {
+                } else {
 
                     listener.onFail(error);
                 }
@@ -158,12 +239,12 @@ public class Post extends ListModel{
 
     }
 
-    public int getPostId() {
-        return mPostId;
+    public int getId() {
+        return mId;
     }
 
-    public void setPostId(int postId) {
-        mPostId = postId;
+    public void setId(int id) {
+        mId = id;
     }
 
     public int getAuthorId() {
@@ -238,5 +319,96 @@ public class Post extends ListModel{
         mTotalVoteCount = totalVoteCount;
     }
 
+    public long getCreatedTime() {
+        return mCreatedTime;
+    }
 
+    public void setCreatedTime(long createdTime) {
+        mCreatedTime = createdTime;
+    }
+
+    public long getUpdatedTime() {
+        return mUpdatedTime;
+    }
+
+    public void setUpdatedTime(long updatedTime) {
+        mUpdatedTime = updatedTime;
+    }
+
+    public long getDeletedTime() {
+        return mDeletedTime;
+    }
+
+    public void setDeletedTime(long deletedTime) {
+        mDeletedTime = deletedTime;
+    }
+
+    public ArrayList<Tag> getTags() {
+        return mTags;
+    }
+
+    public void setTags(ArrayList<Tag> tags) {
+        mTags = tags;
+    }
+
+    public ArrayList<Comment> getComments() {
+        return mComments;
+    }
+
+    public void setComments(ArrayList<Comment> comments) {
+        mComments = comments;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.mCreatedTime);
+        dest.writeLong(this.mUpdatedTime);
+        dest.writeLong(this.mDeletedTime);
+        dest.writeInt(this.mId);
+        dest.writeInt(this.mAuthorId);
+        dest.writeString(this.mPostBody);
+        dest.writeString(this.mAuthorNickName);
+        dest.writeString(this.mAuthorGender);
+        dest.writeString(this.mAuthorBirth);
+        dest.writeInt(this.mBirthStart);
+        dest.writeInt(this.mBirthEnd);
+        dest.writeInt(this.mTotalVoteCount);
+        dest.writeTypedList(this.mTags);
+        dest.writeTypedList(this.mComments);
+    }
+
+    protected Post(Parcel in) {
+        this.mCreatedTime = in.readLong();
+        this.mUpdatedTime = in.readLong();
+        this.mDeletedTime = in.readLong();
+        this.mId = in.readInt();
+        this.mAuthorId = in.readInt();
+        this.mPostBody = in.readString();
+        this.mAuthorNickName = in.readString();
+        this.mAuthorGender = in.readString();
+        this.mAuthorBirth = in.readString();
+        this.mBirthStart = in.readInt();
+        this.mBirthEnd = in.readInt();
+        this.mTotalVoteCount = in.readInt();
+        this.mTags = in.createTypedArrayList(Tag.CREATOR);
+        this.mComments = in.createTypedArrayList(Comment.CREATOR);
+    }
+
+    public static final Creator<Post> CREATOR = new Creator<Post>() {
+        @Override
+        public Post createFromParcel(Parcel source) {
+            return new Post(source);
+        }
+
+        @Override
+        public Post[] newArray(int size) {
+            return new Post[size];
+        }
+    };
 }

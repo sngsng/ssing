@@ -341,8 +341,6 @@ public class SignUpDialogFragment extends DialogFragment {
         mPageControlContainer.setVisibility(View.GONE);
     }
 
-
-
     public interface DismissCallback {
 
         void onDismiss();

@@ -24,6 +24,7 @@ public class MainDrawerViewHolder {
 
     private MainActivity mMainActivity;
     private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
 
     private Button mLoginButton;
     private Button mLogoutButton;
@@ -46,6 +47,19 @@ public class MainDrawerViewHolder {
 
     public void setButtonCallback(DrawerMenuButtonCallback buttonCallback) {
         mButtonCallback = buttonCallback;
+    }
+
+    public boolean isDrawerOpen() {
+
+        return mDrawerLayout.isDrawerOpen(mNavigationView);
+    }
+
+    public void toggleDrawer() {
+
+        if (mDrawerLayout.isDrawerOpen(mNavigationView))
+            mDrawerLayout.closeDrawer(mNavigationView);
+        else
+            mDrawerLayout.openDrawer(mNavigationView);
     }
 
     public void initializeDrawerLayout() {
@@ -89,16 +103,16 @@ public class MainDrawerViewHolder {
         mLoggedInContainer = (ViewGroup)mMainActivity.findViewById(R.id.main_logged_in_container);
 
         mDrawerLayout = (DrawerLayout) mMainActivity.findViewById(R.id.main_drawer_layout);
-        NavigationView navigationView = (NavigationView)mMainActivity.findViewById(R.id.main_navigation_view);
+        mNavigationView = (NavigationView)mMainActivity.findViewById(R.id.main_navigation_view);
 
         // 백그라운드 Dim 비활성화
         mDrawerLayout.setScrimColor(Color.TRANSPARENT);
 
         // navigationView half width
         int width = mMainActivity.getResources().getDisplayMetrics().widthPixels/2;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) navigationView.getLayoutParams();
+        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mNavigationView.getLayoutParams();
         params.width = width;
-        navigationView.setLayoutParams(params);
+        mNavigationView.setLayoutParams(params);
 
         // Drawer Toggle 버튼 설정
         Toolbar toolbar = (Toolbar)mMainActivity.findViewById(R.id.toolbar);

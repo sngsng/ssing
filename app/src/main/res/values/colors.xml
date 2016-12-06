@@ -8,8 +8,10 @@
     <color name="colorPrimaryText">#212121</color>
     <color name="colorDivider">#BDBDBD</color>
     <color name="colorDisabled">#cbcbcb</color>
+    <color name="colorDividerLight">#d9d9d9</color>
 
 
+    <color name="colorBlackOp80">#c826272b</color>
     <color name="colorDarkGrey">#2b2b2b</color>
     <color name="colorDefaultBackground">#e2e2e3</color>
     <color name="colorDefaultBorder">#d9d9d9</color>
@@ -17,7 +19,18 @@
     <color name="colorKakao">#f8e71c</color>
     <color name="colorKakaoText">#030303</color>
     <color name="colorFacebook">#3b579d</color>
+    <color name="colorAddCommentBackground">#393939</color>
     <color name="colorSignUpButtonBackground">#32ffffff</color>
     <color name="colorSignUpButtonBackgroundSelected">#96ffffff</color>
+
+
+
+    <color name="colorTagBackgroundRandom1">#009688</color>
+    <color name="colorTagBackgroundRandom2">#448AFF</color>
+    <color name="colorTagBackgroundRandom3">#FFC107</color>
+    <color name="colorTagBackgroundRandom4">#607D8B</color>
+    <color name="colorTagBackgroundRandom5">#FF9800</color>
+    <color name="colorTagBackgroundRandom6">#3F51B5</color>
+    <color name="colorTagBackgroundRandom7">#00BCD4</color>
 
 </resources>

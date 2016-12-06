@@ -1,6 +1,8 @@
 package slogup.ssing.Util;
 
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -12,7 +14,7 @@ import java.util.Locale;
 public class TimeUtils {
 
 
-    public static String toSimpleDateStringFormat(long milliseconds) {
+    private static String toSimpleDateStringFormat(long milliseconds) {
 
         Date date = new Date();
         date.setTime(milliseconds);
@@ -23,9 +25,10 @@ public class TimeUtils {
 
     public static String toSimplePastTimeStringFormat(long microSeconds) {
 
+        Log.i("ss", microSeconds + "초");
         long milliseconds = microSeconds / 1000;
-
-        int seconds = (int)(milliseconds / 1000);
+        long curMills = System.currentTimeMillis();
+        int seconds = (int)((curMills - milliseconds) / 1000);
 
         int secs  = seconds % 60;
         int mins = (seconds / 60) % 60;
