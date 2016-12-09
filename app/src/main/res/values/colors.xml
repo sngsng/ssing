@@ -12,6 +12,7 @@
 
 
     <color name="colorBlackOp80">#c826272b</color>
+    <color name="colorBlackOp40">#50000000</color>
     <color name="colorDarkGrey">#2b2b2b</color>
     <color name="colorDefaultBackground">#e2e2e3</color>
     <color name="colorDefaultBorder">#d9d9d9</color>
@@ -24,13 +25,16 @@
     <color name="colorSignUpButtonBackgroundSelected">#96ffffff</color>
 
 
+<array name="colorTagBackgroundRandoms">
 
-    <color name="colorTagBackgroundRandom1">#009688</color>
-    <color name="colorTagBackgroundRandom2">#448AFF</color>
-    <color name="colorTagBackgroundRandom3">#FFC107</color>
-    <color name="colorTagBackgroundRandom4">#607D8B</color>
-    <color name="colorTagBackgroundRandom5">#FF9800</color>
-    <color name="colorTagBackgroundRandom6">#3F51B5</color>
-    <color name="colorTagBackgroundRandom7">#00BCD4</color>
+    <item>#009688</item>
+    <item>#448AFF</item>
+    <item>#FFC107</item>
+    <item>#607D8B</item>
+    <item>#FF9800</item>
+    <item>#3F51B5</item>
+    <item>#00BCD4</item>
+
+</array>
 
 </resources>

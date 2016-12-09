@@ -1,7 +1,13 @@
 package slogup.ssing.Model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.slogup.sgcore.network.CoreError;
+import com.slogup.sgcore.network.RestClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,6 +16,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import slogup.ssing.Network.SsingAPIMeta;
+import slogup.ssing.Util.CommonUtils;
+import slogup.ssing.Util.SsingUtils;
 
 /**
  * Created by sngjoong on 2016. 12. 4..
@@ -17,6 +25,7 @@ import slogup.ssing.Network.SsingAPIMeta;
 
 public class Comment implements Parcelable {
 
+    private static final String LOG_TAG = Comment.class.getSimpleName();
     private int mAuthorId;
     private int mPostId;
     private String mBody;
@@ -28,7 +37,7 @@ public class Comment implements Parcelable {
     private long mUpdatedTime;
     private long mDeletedTime;
 
-    public Comment(JSONObject jsonObject) {
+    public Comment(Context context, JSONObject jsonObject) {
 
 
         try {
@@ -57,6 +66,7 @@ public class Comment implements Parcelable {
 
                 JSONObject tagJson = tagsJson.getJSONObject(i);
                 Tag tag = new Tag(tagJson);
+                tag.setBackgroundColor(SsingUtils.getTagBackgroundColor(context, i));
                 tags.add(tag);
             }
             mTags = tags;
@@ -65,6 +75,54 @@ public class Comment implements Parcelable {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void addOne(Context context, int postId, String body, @Nullable ArrayList<String> tags, @Nullable ArrayList<String> imageIds, final RestClient.RestListener listener) {
+
+        JSONObject params = new JSONObject();
+
+        try {
+            params.put(SsingAPIMeta.Comments.Request.POST_ID, postId);
+            params.put(SsingAPIMeta.Comments.Request.BODY, body);
+
+            if (tags != null && !tags.isEmpty())
+                params.put(SsingAPIMeta.Comments.Request.TAGS, CommonUtils.arrayParamToString(tags));
+
+            if (imageIds != null && !imageIds.isEmpty())
+                params.put(SsingAPIMeta.Comments.Request.IMAGE_IDS, CommonUtils.arrayParamToString(imageIds));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RestClient restClient = new RestClient(context);
+        restClient.request(RestClient.Method.POST, SsingAPIMeta.Comments.URL, params, new RestClient.RestListener() {
+            @Override
+            public void onBefore() {
+
+                listener.onBefore();
+            }
+
+            @Override
+            public void onSuccess(Object response) {
+
+                Log.i(LOG_TAG, "Add Comment : " + response.toString());
+                listener.onSuccess(response);
+            }
+
+            @Override
+            public void onFail(CoreError error) {
+
+                listener.onFail(error);
+            }
+
+            @Override
+            public void onError(CoreError error) {
+
+                listener.onError(error);
+            }
+        });
+
     }
 
     public String getAuthorGender() {

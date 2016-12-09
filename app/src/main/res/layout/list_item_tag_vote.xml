@@ -4,7 +4,7 @@
              android:layout_width="@dimen/tag_vote_size"
              android:id="@+id/tag_vote_container"
              android:layout_height="match_parent"
-             android:background="@color/colorTagBackgroundRandom1"
+             android:background="@color/colorSecondaryText"
              android:orientation="vertical">
 
     <FrameLayout
@@ -12,10 +12,17 @@
         android:layout_height="match_parent">
 
         <ImageView
+            android:adjustViewBounds="true"
             android:id="@+id/tag_vote_background_imageview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"/>
+
+        <View
+            android:id="@+id/tag_vote_image_cover_view"
+            android:background="@color/colorBlackOp40"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
 
     </FrameLayout>

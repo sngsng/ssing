@@ -21,7 +21,7 @@ import slogup.ssing.Util.TimeUtils;
  * Created by sngjoong on 2016. 12. 4..
  */
 
-public class PostDetailViewHolder {
+public class PostDetailActivityViewHolder {
 
     private PostDetailActivity mPostDetailActivity;
     private TextView mNickNameTextView;
@@ -40,7 +40,7 @@ public class PostDetailViewHolder {
     private Post mPost;
     private PostDetailButtonCallback mButtonCallback;
 
-    public PostDetailViewHolder(PostDetailActivity postDetailActivity, Post post) {
+    public PostDetailActivityViewHolder(PostDetailActivity postDetailActivity, Post post) {
 
         mPostDetailActivity = postDetailActivity;
         setPost(post);

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.v4.widget.DrawerLayout
-    android:id="@+id/main_drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="slogup.ssing.Activity.MainActivity">
@@ -22,15 +22,29 @@
             android:background="@color/colorWhite"
             android:theme="@style/ThemeOverlay.AppCompat.Light"
             app:title="@string/title_timeline"
-            app:titleTextColor="@color/colorPrimaryText"/>
+            app:titleTextColor="@color/colorPrimaryText">
+
+            <ImageButton
+                android:id="@+id/main_search_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:padding="8dp"
+                android:src="@drawable/ic_search_black"/>
+
+        </android.support.v7.widget.Toolbar>
+
 
         <slogup.ssing.View.CustomTabLayout
             android:id="@+id/main_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabBackground="@android:color/white"
-            app:tabIndicatorHeight="3dp"
             app:tabIndicatorColor="@color/colorPrimaryText"
+            app:tabIndicatorHeight="3dp"
             app:tabSelectedTextColor="@color/colorPrimaryText"
             app:tabTextColor="@color/colorDisabled"/>
 
@@ -49,13 +63,13 @@
 
 
     <android.support.design.widget.NavigationView
-        android:padding="16dp"
         android:id="@+id/main_navigation_view"
         android:layout_width="200dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:layout_marginTop="?attr/actionBarSize"
-        android:background="@color/colorDarkGrey">
+        android:background="@color/colorDarkGrey"
+        android:padding="16dp">
 
         <include layout="@layout/view_main_drawer"/>
 

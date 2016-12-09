@@ -3,8 +3,13 @@ package slogup.ssing.Model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.slogup.sgcore.model.ImageInfo;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import slogup.ssing.Network.SsingAPIMeta;
 
@@ -22,7 +27,23 @@ public class Tag implements Parcelable {
     private long mCreatedTime;
     private long mUpdatedTime;
     private long mDeletedTime;
+    private int mBackgroundColor;
+    private ImageInfo mImageInfo;
 
+    public ImageInfo getImageInfo() {
+        return mImageInfo;
+    }
+
+    public void setImageInfo(ImageInfo imageInfo) {
+        mImageInfo = imageInfo;
+    }
+
+    public Tag() {
+    }
+
+    public Tag(String name) {
+        mName = name;
+    }
 
     public Tag(JSONObject jsonObject) {
 
@@ -53,6 +74,29 @@ public class Tag implements Parcelable {
 
             if (jsonObject.has(SsingAPIMeta.Posts.Response.UPDATED_AT))
                 mUpdatedTime = jsonObject.getLong(SsingAPIMeta.Posts.Response.UPDATED_AT);
+
+            // 태그 이미지 (댓글에 있는 태그)
+            if (jsonObject.has(SsingAPIMeta.Posts.Response.TAG_IMAGES)) {
+
+                JSONArray tagImgs = jsonObject.getJSONArray(SsingAPIMeta.Posts.Response.TAG_IMAGES);
+
+                if (tagImgs.length() != 0) {
+
+                    JSONObject tagImageJson = tagImgs.getJSONObject(0);
+                    JSONObject imageInfoJson = tagImageJson.getJSONObject(SsingAPIMeta.Posts.Response.IMAGE);
+                    mImageInfo = new ImageInfo(imageInfoJson);
+                }
+            }
+
+            // 태그 이미지 (투표 태그)
+            if (jsonObject.has(SsingAPIMeta.Posts.Response.IMAGE) &&
+                    !jsonObject.isNull(SsingAPIMeta.Posts.Response.IMAGE)) {
+
+                JSONObject imageInfoJson = jsonObject.getJSONObject(SsingAPIMeta.Posts.Response.IMAGE);
+                mImageInfo = new ImageInfo(imageInfoJson);
+
+            }
+
 
 
         } catch (JSONException e) {
@@ -116,6 +160,14 @@ public class Tag implements Parcelable {
         mUpdatedTime = updatedTime;
     }
 
+    public int getBackgroundColor() {
+        return mBackgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        mBackgroundColor = backgroundColor;
+    }
+
     public Tag(int id, int count, int postId, int commentId, String name, long createdTime, long updatedTime, long deletedTime) {
         mId = id;
         mCount = count;
@@ -152,6 +204,8 @@ public class Tag implements Parcelable {
         dest.writeLong(this.mCreatedTime);
         dest.writeLong(this.mUpdatedTime);
         dest.writeLong(this.mDeletedTime);
+        dest.writeInt(this.mBackgroundColor);
+        dest.writeParcelable(this.mImageInfo, flags);
     }
 
     protected Tag(Parcel in) {
@@ -163,6 +217,8 @@ public class Tag implements Parcelable {
         this.mCreatedTime = in.readLong();
         this.mUpdatedTime = in.readLong();
         this.mDeletedTime = in.readLong();
+        this.mBackgroundColor = in.readInt();
+        this.mImageInfo = in.readParcelable(ImageInfo.class.getClassLoader());
     }
 
     public static final Creator<Tag> CREATOR = new Creator<Tag>() {

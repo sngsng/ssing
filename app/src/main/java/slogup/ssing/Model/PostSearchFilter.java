@@ -15,6 +15,7 @@ import slogup.ssing.Network.SsingAPIMeta;
 
 public class PostSearchFilter {
 
+    private String mAuthorId;
     private String mSearchItem;
     private ArrayList<String> mTags;
     private String mGender;
@@ -57,11 +58,35 @@ public class PostSearchFilter {
         return postSearchFilter;
     }
 
+    public static PostSearchFilter create(String searchQuery, boolean isBodySearch) {
+
+        PostSearchFilter searchFilter = new PostSearchFilter();
+
+        if (isBodySearch) {
+
+            searchFilter.setSearchItem(searchQuery);
+        }
+        else {
+
+            ArrayList<String> tags = new ArrayList<>();
+            tags.add(searchQuery);
+            searchFilter.setTags(tags);
+        }
+
+        return searchFilter;
+    }
+
     public JSONObject toJson() {
 
         JSONObject jsonObject = new JSONObject();
 
         try {
+
+            // 작성자 아이디
+            if (mAuthorId != null) {
+                jsonObject.put(SsingAPIMeta.Posts.Request.AUTHOR_ID, mAuthorId);
+            }
+
             // 검색어
             if (mSearchItem != null)
                 jsonObject.put(SsingAPIMeta.Posts.Request.SEARCH_ITEM, mSearchItem);
@@ -103,6 +128,14 @@ public class PostSearchFilter {
         }
 
         return jsonObject;
+    }
+
+    public String getAuthorId() {
+        return mAuthorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        mAuthorId = authorId;
     }
 
     public String getSearchItem() {

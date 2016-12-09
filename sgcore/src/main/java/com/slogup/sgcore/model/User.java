@@ -3,12 +3,11 @@ package com.slogup.sgcore.model;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.slogup.sgcore.CoreAPIContants;
+import com.slogup.sgcore.CoreAPIMeta;
 import com.slogup.sgcore.manager.AccountManager;
 import com.slogup.sgcore.manager.CoreManager;
 import com.slogup.sgcore.network.CoreError;
 import com.slogup.sgcore.network.RestClient;
-import com.slogup.sgcore.network.core.SessionClientHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -197,9 +196,9 @@ public class User extends BaseModel {
 
         try {
 
-            params.put(CoreAPIContants.SessionParams.POST.LOGIN_TYPE, type);
-            params.put(CoreAPIContants.SessionParams.POST.USER_ID, userID);
-            params.put(CoreAPIContants.SessionParams.POST.PASSWORD, password);
+            params.put(CoreAPIMeta.SessionParams.POST.LOGIN_TYPE, type);
+            params.put(CoreAPIMeta.SessionParams.POST.USER_ID, userID);
+            params.put(CoreAPIMeta.SessionParams.POST.PASSWORD, password);
 
             if (optionalParams != null) {
 
@@ -329,8 +328,8 @@ public class User extends BaseModel {
                 try {
                     if (aid != null && aPassword != null) {
 
-                        params.put(CoreAPIContants.User.AID, aid);
-                        params.put(CoreAPIContants.User.APASSWORD, aPassword);
+                        params.put(CoreAPIMeta.User.AID, aid);
+                        params.put(CoreAPIMeta.User.APASSWORD, aPassword);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -343,13 +342,13 @@ public class User extends BaseModel {
         }
 
         try {
-            params.put(CoreAPIContants.User.SIGNUP_TYPE, signUpTypeParam);
+            params.put(CoreAPIMeta.User.SIGNUP_TYPE, signUpTypeParam);
 
             if (providerParam != null)
-                params.put(CoreAPIContants.User.PROVIDER, providerParam);
+                params.put(CoreAPIMeta.User.PROVIDER, providerParam);
 
-            params.put(CoreAPIContants.User.USER_ID, uid);
-            params.put(CoreAPIContants.User.PASSWORD, password);
+            params.put(CoreAPIMeta.User.USER_ID, uid);
+            params.put(CoreAPIMeta.User.PASSWORD, password);
 
             if (optionalParams != null) {
 
@@ -366,7 +365,7 @@ public class User extends BaseModel {
         }
 
         RestClient restService = new RestClient(getContext());
-        restService.request(RestClient.Method.POST, CoreAPIContants.User.URL, params, new RestClient.RestListener() {
+        restService.request(RestClient.Method.POST, CoreAPIMeta.User.URL, params, new RestClient.RestListener() {
             @Override
             public void onBefore() {
 

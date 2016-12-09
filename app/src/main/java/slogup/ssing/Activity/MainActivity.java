@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 
@@ -32,9 +33,10 @@ public class MainActivity extends BaseActivity {
     private static final int BACK_PRESS_TIME_DELAY = 2000;
 
     private PostListFragment mLatestOrderPostListFragment;
-    private PostListFragment mDistanceOrderPostListFragment;
+    private PostListFragment mMyActivityPostListFragment;
     private MainDrawerViewHolder mMainDrawerViewHolder;
     private SignUpDialogFragment mSignUpDialogFragment;
+    private ImageButton mSearchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +46,10 @@ public class MainActivity extends BaseActivity {
 
         setUpDrawer();
         setUpTabLayout();
+        setUpSearchButton();
 
     }
+
 
     @Override
     protected void onStart() {
@@ -78,8 +82,7 @@ public class MainActivity extends BaseActivity {
         if (mMainDrawerViewHolder.isDrawerOpen()) {
 
             mMainDrawerViewHolder.toggleDrawer();
-        }
-        else {
+        } else {
             if (sBackPressedTime + BACK_PRESS_TIME_DELAY > System.currentTimeMillis()) {
 
                 super.onBackPressed();
@@ -90,6 +93,21 @@ public class MainActivity extends BaseActivity {
             }
             sBackPressedTime = System.currentTimeMillis();
         }
+    }
+
+    private void setUpSearchButton() {
+
+        mSearchButton = (ImageButton)findViewById(R.id.main_search_button);
+
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(MainActivity.this, PostSearchActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.scale_down);
+            }
+        });
     }
 
     private void setUpDrawer() {
@@ -112,6 +130,10 @@ public class MainActivity extends BaseActivity {
 
                 if (!isLoggedIn()) {
 
+                    showLogginDialog();
+                } else {
+
+                    startAddPostActivity();
                 }
             }
 
@@ -134,16 +156,24 @@ public class MainActivity extends BaseActivity {
         mMainDrawerViewHolder.initializeDrawerLayout();
     }
 
+    private void startAddPostActivity() {
+
+        Intent intent = new Intent(MainActivity.this, AddPostActivity.class);
+        intent.putExtra(AddPostActivity.EXTRA_ADD_TYPE, TagSettingsActivity.AddType.Post);
+        startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_from_right, R.anim.scale_down);
+    }
+
     private void setUpTabLayout() {
 
         ArrayList<Fragment> fragments = new ArrayList<>();
         ArrayList<String> tabTitles = new ArrayList<>();
 
         mLatestOrderPostListFragment = PostListFragment.newInstance(PostListFragment.PostListOrderType.Latest);
-        mDistanceOrderPostListFragment = PostListFragment.newInstance(PostListFragment.PostListOrderType.Distance);
+        mMyActivityPostListFragment = PostListFragment.newInstance(PostListFragment.PostListOrderType.MyActivity);
 
         fragments.add(mLatestOrderPostListFragment);
-        fragments.add(mDistanceOrderPostListFragment);
+        fragments.add(mMyActivityPostListFragment);
 
         String[] titles = getResources().getStringArray(R.array.titles_main_tab);
         tabTitles.addAll(Arrays.asList(titles));
@@ -163,15 +193,8 @@ public class MainActivity extends BaseActivity {
 
     private boolean isLoggedIn() {
 
-        if (AccountManager.getInstance().isLoggedIn(this)) {
-            return true;
-        }
-        else {
+        return AccountManager.getInstance().isLoggedIn(this);
 
-            showLogginDialog();
-        }
-
-        return false;
     }
 
     private void showLogginDialog() {
@@ -182,6 +205,7 @@ public class MainActivity extends BaseActivity {
             public void onDismiss() {
 
                 mMainDrawerViewHolder.updateDrawerByLoginState();
+                if (isLoggedIn()) mMyActivityPostListFragment.updateMyActivityList(MainActivity.this);
             }
         });
         mSignUpDialogFragment.show(getSupportFragmentManager(), SignUpDialogFragment.class.getSimpleName());
@@ -199,6 +223,8 @@ public class MainActivity extends BaseActivity {
             public void onSuccess(Object response) {
 
                 mMainDrawerViewHolder.updateDrawerByLoginState();
+                mMyActivityPostListFragment.updateMyActivityList(MainActivity.this);
+
             }
 
             @Override

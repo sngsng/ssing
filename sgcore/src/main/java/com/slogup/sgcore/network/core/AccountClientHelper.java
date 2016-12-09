@@ -3,7 +3,7 @@ package com.slogup.sgcore.network.core;
 import android.content.Context;
 import android.net.Uri;
 
-import com.slogup.sgcore.CoreAPIContants;
+import com.slogup.sgcore.CoreAPIMeta;
 import com.slogup.sgcore.manager.CoreManager;
 import com.slogup.sgcore.model.Meta;
 import com.slogup.sgcore.network.CoreError;
@@ -62,16 +62,16 @@ public class AccountClientHelper {
                 key = meta.getNick();
                 break;
             case ID:
-                key = CoreAPIContants.Unique.GET.Value.AID;
+                key = CoreAPIMeta.Unique.GET.Value.AID;
                 break;
             default:
-                key = CoreAPIContants.Unique.GET.Value.AID;
+                key = CoreAPIMeta.Unique.GET.Value.AID;
 
         }
 
-        String url = Uri.parse(CoreAPIContants.Unique.URL).buildUpon()
-                .appendQueryParameter(CoreAPIContants.Unique.GET.Key.KEY, key)
-                .appendQueryParameter(CoreAPIContants.Unique.GET.Key.VALUE, value).build().toString();
+        String url = Uri.parse(CoreAPIMeta.Unique.URL).buildUpon()
+                .appendQueryParameter(CoreAPIMeta.Unique.GET.Key.KEY, key)
+                .appendQueryParameter(CoreAPIMeta.Unique.GET.Key.VALUE, value).build().toString();
 
         RestClient restService = new RestClient(context);
         restService.request(RestClient.Method.GET, url, null, new RestClient.RestListener() {
@@ -109,38 +109,38 @@ public class AccountClientHelper {
         switch (senderPhoneType) {
 
             case SignUp:
-                type = CoreAPIContants.SenderPhone.POST.Value.PHONE_SIGNUP;
+                type = CoreAPIMeta.SenderPhone.POST.Value.PHONE_SIGNUP;
                 break;
             case FindPassword:
-                type = CoreAPIContants.SenderPhone.POST.Value.PHONE_FIND_PASS;
+                type = CoreAPIMeta.SenderPhone.POST.Value.PHONE_FIND_PASS;
                 break;
             case FindID:
-                type = CoreAPIContants.SenderPhone.POST.Value.PHONE_FIND_ID;
+                type = CoreAPIMeta.SenderPhone.POST.Value.PHONE_FIND_ID;
                 break;
             case Adding:
-                type = CoreAPIContants.SenderPhone.POST.Value.PHONE_ADDING;
+                type = CoreAPIMeta.SenderPhone.POST.Value.PHONE_ADDING;
                 break;
             case Login:
-                type = CoreAPIContants.SenderPhone.POST.Value.PHONE_LOGIN;
+                type = CoreAPIMeta.SenderPhone.POST.Value.PHONE_LOGIN;
                 break;
             case Change:
-                type = CoreAPIContants.SenderPhone.POST.Value.PHONE_CHANGE;
+                type = CoreAPIMeta.SenderPhone.POST.Value.PHONE_CHANGE;
                 break;
             default:
-                type = CoreAPIContants.SenderPhone.POST.Value.PHONE_SIGNUP;
+                type = CoreAPIMeta.SenderPhone.POST.Value.PHONE_SIGNUP;
         }
 
         JSONObject params = new JSONObject();
 
         try {
-            params.put(CoreAPIContants.SenderPhone.POST.Key.TYPE, type);
-            params.put(CoreAPIContants.SenderPhone.POST.Key.PHONE_NUM, phoneNum);
+            params.put(CoreAPIMeta.SenderPhone.POST.Key.TYPE, type);
+            params.put(CoreAPIMeta.SenderPhone.POST.Key.PHONE_NUM, phoneNum);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         RestClient restService = new RestClient(context);
-        restService.request(RestClient.Method.POST, CoreAPIContants.SenderPhone.URL, params, new RestClient.RestListener() {
+        restService.request(RestClient.Method.POST, CoreAPIMeta.SenderPhone.URL, params, new RestClient.RestListener() {
             @Override
             public void onBefore() {
 
@@ -175,32 +175,32 @@ public class AccountClientHelper {
         switch (authPhoneType) {
 
             case Adding:
-                type = CoreAPIContants.AuthPhone.POST.Value.PHONE_ADDING;
+                type = CoreAPIMeta.AuthPhone.POST.Value.PHONE_ADDING;
                 break;
             case Change:
-                type = CoreAPIContants.AuthPhone.POST.Value.PHONE_CHANGE;
+                type = CoreAPIMeta.AuthPhone.POST.Value.PHONE_CHANGE;
                 break;
             case FindPassword:
-                type = CoreAPIContants.AuthPhone.POST.Value.PHONE_FIND_PASS;
+                type = CoreAPIMeta.AuthPhone.POST.Value.PHONE_FIND_PASS;
                 break;
             case FindID:
-                type = CoreAPIContants.AuthPhone.POST.Value.PHONE_FIND_ID;
+                type = CoreAPIMeta.AuthPhone.POST.Value.PHONE_FIND_ID;
                 break;
             default:
-                type = CoreAPIContants.AuthPhone.POST.Value.PHONE_ADDING;
+                type = CoreAPIMeta.AuthPhone.POST.Value.PHONE_ADDING;
         }
 
         JSONObject params = new JSONObject();
 
         try {
-            params.put(CoreAPIContants.AuthPhone.POST.Key.TYPE, type);
-            params.put(CoreAPIContants.AuthPhone.POST.Key.TOKEN, authNum);
+            params.put(CoreAPIMeta.AuthPhone.POST.Key.TYPE, type);
+            params.put(CoreAPIMeta.AuthPhone.POST.Key.TOKEN, authNum);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         RestClient restService = new RestClient(context);
-        restService.request(RestClient.Method.POST, CoreAPIContants.AuthPhone.URL, params, new RestClient.RestListener() {
+        restService.request(RestClient.Method.POST, CoreAPIMeta.AuthPhone.URL, params, new RestClient.RestListener() {
             @Override
             public void onBefore() {
 

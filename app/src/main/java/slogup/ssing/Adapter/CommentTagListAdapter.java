@@ -71,6 +71,14 @@ public class CommentTagListAdapter extends RecyclerView.Adapter<CommentTagListAd
             super(itemView);
 
             mCommentTagTextView = (TextView) itemView.findViewById(R.id.comment_tag_textview);
+            mCommentTagTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (mListItemButtonCallback != null)
+                        mListItemButtonCallback.onTagVoteButtonClick(getAdapterPosition());
+                }
+            });
 
 
         }

@@ -12,9 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
-import com.slogup.sgcore.CoreAPIContants;
+import com.slogup.sgcore.CoreAPIMeta;
 import com.slogup.sgcore.model.User;
 import com.slogup.sgcore.network.CoreError;
 import com.slogup.sgcore.network.RestClient;
@@ -22,13 +21,11 @@ import com.slogup.sgcore.network.core.SessionClientHelper;
 import com.slogup.sgcore.network.social.FacebookClientHelper;
 import com.slogup.sgcore.network.social.KakaoClientHelper;
 import com.slogup.sgcore.network.social.SocialClientHelper;
-import com.slogup.sgcore.util.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import me.relex.circleindicator.CircleIndicator;
-import slogup.ssing.Activity.MainActivity;
 import slogup.ssing.Adapter.SignUpPagerAdapter;
 import slogup.ssing.R;
 import slogup.ssing.Util.CommonUtils;
@@ -174,11 +171,11 @@ public class SignUpDialogFragment extends DialogFragment {
 
         JSONObject optionalParams = new JSONObject();
         try {
-            optionalParams.put(CoreAPIContants.User.BIRTH_Y, mSelectedBirth);
-            optionalParams.put(CoreAPIContants.User.BIRTH_M, 1);
-            optionalParams.put(CoreAPIContants.User.BIRTH_D, 1);
-            optionalParams.put(CoreAPIContants.User.NICK, mSelectedNick);
-            optionalParams.put(CoreAPIContants.User.GENDER, mSelectedGender);
+            optionalParams.put(CoreAPIMeta.User.BIRTH_Y, mSelectedBirth);
+            optionalParams.put(CoreAPIMeta.User.BIRTH_M, 1);
+            optionalParams.put(CoreAPIMeta.User.BIRTH_D, 1);
+            optionalParams.put(CoreAPIMeta.User.NICK, mSelectedNick);
+            optionalParams.put(CoreAPIMeta.User.GENDER, mSelectedGender);
         } catch (JSONException e) {
             e.printStackTrace();
         }

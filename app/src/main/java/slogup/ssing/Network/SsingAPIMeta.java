@@ -1,12 +1,14 @@
 package slogup.ssing.Network;
 
-import com.slogup.sgcore.CoreAPIContants;
+import com.slogup.sgcore.CoreAPIMeta;
 
 /**
  * Created by sngjoong on 2016. 11. 27..
  */
 
-public final class SsingAPIMeta extends CoreAPIContants {
+public final class SsingAPIMeta extends CoreAPIMeta {
+
+    public static final String IMAGE_FOLDER = "tag";
 
     public class Vote {
 
@@ -16,6 +18,23 @@ public final class SsingAPIMeta extends CoreAPIContants {
 
             public static final String POST_ID = "postId";
             public static final String TAG_NAME = "tagName";
+        }
+
+        public class Response {
+
+        }
+    }
+
+    public class Comments {
+
+        public static final String URL = "ssing/comments";
+
+        public class Request {
+
+            public static final String POST_ID = "postId";
+            public static final String BODY = "body";
+            public static final String TAGS = "tags";
+            public static final String IMAGE_IDS = "imageIds";
         }
 
         public class Response {
@@ -40,6 +59,10 @@ public final class SsingAPIMeta extends CoreAPIContants {
             public static final String SORT = "sort";
             public static final String LAST = "last";
             public static final String SIZE = "size";
+            public static final String BODY = "body";
+            public static final String IMAGE_IDS = "imageIds";
+            public static final String AUTHOR_ID = "authorId";
+
         }
 
         public class Response {
@@ -68,6 +91,7 @@ public final class SsingAPIMeta extends CoreAPIContants {
             public static final String COMMENT_ID = "commentId";
             public static final String TAGS = "tags";
             public static final String TAG_IMAGES = "tagImages";
+            public static final String IMAGE = "image";
         }
 
 

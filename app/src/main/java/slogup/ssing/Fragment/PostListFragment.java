@@ -1,6 +1,7 @@
 package slogup.ssing.Fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.slogup.sgcore.manager.AccountManager;
+import com.slogup.sgcore.model.User;
 import com.slogup.sgcore.network.CoreError;
 import com.slogup.sgcore.network.RestClient;
 
@@ -22,12 +25,16 @@ import slogup.ssing.Model.PostSearchFilter;
 import slogup.ssing.R;
 import slogup.ssing.View.PostListFragmentViewHolder;
 
+import static slogup.ssing.Fragment.PostListFragment.PostListOrderType.Latest;
+import static slogup.ssing.Fragment.PostListFragment.PostListOrderType.MyActivity;
+
 public class PostListFragment extends Fragment {
 
     public enum PostListOrderType {
 
         Latest,
-        Distance
+        MyActivity,
+        Search
 
     }
 
@@ -35,6 +42,7 @@ public class PostListFragment extends Fragment {
     private static final String ARG_ORDER_TYPE = "argOrderType";
     private PostListOrderType mListOrderType;
     private PostListFragmentViewHolder mFragmentViewHolder;
+
     private ArrayList<Post> mPosts = new ArrayList<>();
 
 
@@ -62,6 +70,18 @@ public class PostListFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+
+        super.onStart();
+
+//        if (mListOrderType == Latest ||
+//                mListOrderType == PostListOrderType.MyActivity) {
+//            syncCurrentList();
+//        }
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -69,8 +89,73 @@ public class PostListFragment extends Fragment {
 
         setUpViews(rootView);
 
-        if (mPosts.isEmpty()) loadPosts(true, false, null);
+        switch (mListOrderType) {
+
+            case Latest:
+                mFragmentViewHolder.setEnabledRefreshLayout(true);
+                if (mPosts.isEmpty()) loadPosts(true, false, null);
+                break;
+
+            case MyActivity:
+                updateMyActivityList(getActivity());
+                break;
+
+            case Search:
+                break;
+        }
+
+
         return rootView;
+    }
+
+    public void searchPost(String searchQuery, boolean isBodySearch) {
+
+        mPosts.clear();
+        mFragmentViewHolder.updateList(mPosts);
+        loadPosts(true, false, PostSearchFilter.create(searchQuery, isBodySearch));
+
+    }
+
+    public void updateMyActivityList(Context context) {
+
+        if (mFragmentViewHolder != null) {
+
+            if (AccountManager.getInstance().isLoggedIn(context)) {
+                mFragmentViewHolder.setEnabledRefreshLayout(true);
+                User curUser = AccountManager.getInstance().getUser();
+                PostSearchFilter postSearchFilter = new PostSearchFilter();
+                postSearchFilter.setAuthorId(Integer.toString(curUser.getId()));
+                if (mPosts.isEmpty()) loadPosts(false, false, postSearchFilter);
+
+            } else {
+
+                mFragmentViewHolder.finishRefresh();
+                mFragmentViewHolder.setEnabledRefreshLayout(false);
+                mPosts.clear();
+                mFragmentViewHolder.updateList(mPosts);
+                mFragmentViewHolder.showEmptyView(getString(R.string.title_required_login));
+
+            }
+        }
+    }
+
+    private void syncCurrentList() {
+
+        if (mFragmentViewHolder != null) {
+
+            mPosts.clear();
+
+            if (mListOrderType == Latest) {
+
+                loadPosts(false, true, null);
+            }
+            else if (mListOrderType == MyActivity) {
+
+                updateMyActivityList(getActivity());
+            }
+
+
+        }
     }
 
     private void setUpViews(View rootView) {
@@ -82,15 +167,54 @@ public class PostListFragment extends Fragment {
             @Override
             public void onRefresh() {
 
-                loadPosts(false, true, null);
+                // 리프레쉬 할경우 페이징 초기화
+                mFragmentViewHolder.setPagingEnable(true);
+                syncCurrentList();
             }
         });
 
-        mFragmentViewHolder.setPostClickCallback(new PostListFragmentViewHolder.PostClickCallback() {
+        mFragmentViewHolder.setPostListActionCallback(new PostListFragmentViewHolder.PostListActionCallback() {
             @Override
             public void onPostDetailClick(Post post) {
 
                 loadPostDetail(post.getId());
+            }
+
+            @Override
+            public void onScrollBottom(boolean shouldLoadData) {
+
+                if (shouldLoadData) {
+
+
+                    if (!mPosts.isEmpty()) {
+
+                        PostSearchFilter searchFilter = new PostSearchFilter();
+                        Post lastPost = mPosts.get(mPosts.size() - 1);
+                        searchFilter.setLast(lastPost.getCreatedTime());
+                        switch (mListOrderType) {
+
+                            case Latest:
+                                loadPosts(false, false, searchFilter);
+                                break;
+
+                            case MyActivity:
+                                if (AccountManager.getInstance().isLoggedIn(getActivity())) {
+
+                                    User user = AccountManager.getInstance().getUser();
+                                    searchFilter.setAuthorId(Integer.toString(user.getId()));
+                                }
+                                loadPosts(false, false, searchFilter);
+                                break;
+
+                            case Search:
+                                break;
+
+
+                        }
+
+
+                    }
+                }
             }
         });
     }
@@ -139,12 +263,13 @@ public class PostListFragment extends Fragment {
             public void onBefore() {
 
                 if (isInitialLoad) mFragmentViewHolder.startLoading();
+                mFragmentViewHolder.setPagingEnable(false);
             }
 
             @Override
             public void onSuccess(Object response) {
 
-
+                mFragmentViewHolder.setPagingEnable(false);
                 if (isInitialLoad) mFragmentViewHolder.stopLoading();
                 mFragmentViewHolder.finishRefresh();
 
@@ -155,12 +280,19 @@ public class PostListFragment extends Fragment {
                     }
 
                     ArrayList<Post> responsePosts = (ArrayList) response;
+
+                    // 404 Paging을 막음
+                    if (responsePosts.isEmpty())
+                        mFragmentViewHolder.setPagingEnable(false);
+                    else
+                        mFragmentViewHolder.setPagingEnable(true);
+
                     mPosts.addAll(responsePosts);
                     mFragmentViewHolder.updateList(mPosts);
 
                 }
 
-                if (mPosts.isEmpty()) mFragmentViewHolder.showEmptyView();
+                if (mPosts.isEmpty()) mFragmentViewHolder.showEmptyView(getEmptyViewMsg());
                 else mFragmentViewHolder.hideEmptyView();
             }
 
@@ -170,6 +302,7 @@ public class PostListFragment extends Fragment {
 
                 if (isInitialLoad) mFragmentViewHolder.stopLoading();
                 mFragmentViewHolder.finishRefresh();
+                mFragmentViewHolder.setPagingEnable(true);
                 showToast(error.errorMsg);
             }
 
@@ -178,6 +311,7 @@ public class PostListFragment extends Fragment {
 
                 if (isInitialLoad) mFragmentViewHolder.stopLoading();
                 mFragmentViewHolder.finishRefresh();
+                mFragmentViewHolder.setPagingEnable(true);
                 showToast(error.errorMsg);
             }
         });
@@ -216,6 +350,24 @@ public class PostListFragment extends Fragment {
         intent.putExtra(PostDetailActivity.EXTRA_POST, post);
         getActivity().startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_in_from_right, R.anim.scale_down);
+    }
+
+    private String getEmptyViewMsg() {
+
+        switch (mListOrderType) {
+
+            case Latest:
+                return getActivity().getString(R.string.title_empty_post_list);
+
+            case MyActivity:
+                return getActivity().getString(R.string.title_empty_post_list_activity);
+
+            case Search:
+                return getActivity().getString(R.string.title_empty_post_list_search);
+
+            default:
+                return getActivity().getString(R.string.title_empty_post_list);
+        }
     }
 
 

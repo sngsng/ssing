@@ -3,10 +3,25 @@ package com.slogup.sgcore;
 /**
  * Created by sngjoong on 16. 8. 22..
  */
-public class CoreAPIContants {
+public class CoreAPIMeta {
 
     public static String RootUrl = "http://52.198.33.208:8080";
     public static String RootUrlPostFix = "/api/";
+
+    public class Image {
+
+        public static final String URL = "etc/images";
+
+        public static final String AUTHOR_ID = "authorId";
+        public static final String FOLDER = "folder";
+        public static final String NAME = "name";
+        public static final String AUTHORIZED = "authorized";
+        public static final String CREATED_AT = "createdAt";
+        public static final String UPDATED_AT = "updatedAt";
+        public static final String DELETED_AT = "deletedAt";
+        public static final String ID = "id";
+        public static final String IMAGES = "images";
+    }
 
     public class SessionParams {
 

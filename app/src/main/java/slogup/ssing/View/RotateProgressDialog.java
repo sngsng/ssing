@@ -35,6 +35,7 @@ public class RotateProgressDialog extends ProgressDialog {
 
 
         mRotateProgressDialog = (RotateLoading)findViewById(R.id.rotate_progress_bar);
+        mRotateProgressDialog.start();
 
         getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
@@ -47,7 +48,7 @@ public class RotateProgressDialog extends ProgressDialog {
     public void onAttachedToWindow() {
 
         super.onAttachedToWindow();
-        mRotateProgressDialog.start();
+
 
     }
 

@@ -4,20 +4,25 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
+
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkError;
+
 import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
+import com.android.volley.error.AuthFailureError;
+import com.android.volley.error.NetworkError;
+import com.android.volley.error.NoConnectionError;
+import com.android.volley.error.ParseError;
+import com.android.volley.error.ServerError;
+import com.android.volley.error.TimeoutError;
+import com.android.volley.error.VolleyError;
+import com.android.volley.request.JsonObjectRequest;
+import com.android.volley.request.MultiPartRequest;
+import com.android.volley.request.SimpleMultiPartRequest;
 import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.slogup.sgcore.CoreAPIContants;
+import com.slogup.sgcore.CoreAPIMeta;
 import com.slogup.sgcore.R;
 import com.slogup.sgcore.util.Utils;
 
@@ -30,6 +35,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -68,54 +74,36 @@ public class RestClient {
         mContext = context;
     }
 
-    public void requestUploadFiles(String subUrl, final JSONObject params, final ArrayList<File> files, final RestListener listener) {
+    public void requestUploadFiles(String subUrl, @Nullable JSONObject params, ArrayList<File> files, final RestListener listener) {
 
-        String url = CoreAPIContants.RootUrl + CoreAPIContants.RootUrlPostFix + subUrl;
-        MultipartRequest multipartRequest = new MultipartRequest(Request.Method.POST, url, new Response.Listener<NetworkResponse>() {
+        String url = CoreAPIMeta.RootUrl + CoreAPIMeta.RootUrlPostFix + subUrl;
+        SimpleMultiPartRequest multiPartRequest = new SimpleMultiPartRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
-            public void onResponse(NetworkResponse response) {
+            public void onResponse(String response) {
 
-                listener.onSuccess(response);
+                Log.i(LOG_TAG, "uploadFiles : " + response);
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    listener.onSuccess(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    listener.onSuccess(new JSONObject());
+                }
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
                 checkError(error, listener);
+
             }
         }) {
-
             @Override
-            protected Map<String, DataPart> getByteData() throws AuthFailureError {
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
 
+                return super.parseNetworkResponse(response);
 
-                Map<String, DataPart> dataMap = new HashMap<>();
-
-                for (int i = 0; i < files.size(); i++) {
-
-                    try {
-
-                        File file = files.get(i);
-                        byte[] content = FileUtils.readFileToByteArray(file);
-                        dataMap.put("file" + i, new DataPart(file.getName(), content));
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                return dataMap;
-            }
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                try {
-                    return Utils.jsonToMap(params.toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return null;
             }
 
             @Override
@@ -123,20 +111,35 @@ public class RestClient {
 
                 return makeHeaderFields();
             }
-
-
-            @Override
-            protected Response<NetworkResponse> parseNetworkResponse(NetworkResponse response) {
-
-                saveCookie(response);
-                return super.parseNetworkResponse(response);
-            }
         };
 
-        multipartRequest.setRetryPolicy(new DefaultRetryPolicy(TIME_OUT_MS,
+        // File Part
+        for (int i = 0; i < files.size(); i++) {
+
+            File file = files.get(i);
+            multiPartRequest.addFile("file" + i, file.getPath());
+        }
+
+        // String part
+        if (params != null) {
+
+            for (Iterator iterator = params.keys(); iterator.hasNext(); ) {
+
+                String key = (String) iterator.next();
+                try {
+                    String value = params.getString(key);
+                    multiPartRequest.addStringParam(key, value);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        multiPartRequest.setRetryPolicy(new DefaultRetryPolicy(TIME_OUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueueManager.getInstance(mContext).getRequestQueue().add(multipartRequest);
+        RequestQueueManager.getInstance(mContext).getRequestQueue().add(multiPartRequest);
+
     }
 
     public void request(Method method, String subUrl, @Nullable JSONObject params, final RestListener listener) {
@@ -161,7 +164,7 @@ public class RestClient {
                 break;
         }
 
-        String url = CoreAPIContants.RootUrl + CoreAPIContants.RootUrlPostFix + subUrl;
+        String url = CoreAPIMeta.RootUrl + CoreAPIMeta.RootUrlPostFix + subUrl;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(volleyMethod, url, params, new Response.Listener<JSONObject>() {
 
@@ -186,6 +189,7 @@ public class RestClient {
 
                 return makeHeaderFields();
             }
+
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
 
@@ -213,9 +217,11 @@ public class RestClient {
             }
         };
 
+
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(TIME_OUT_MS,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        jsonObjectRequest.setShouldCache(false);
         RequestQueueManager.getInstance(mContext).getRequestQueue().add(jsonObjectRequest);
     }
 
@@ -234,7 +240,7 @@ public class RestClient {
 
                 try {
                     jsonString = new String(error.networkResponse.data, HttpHeaderParser.parseCharset(error.networkResponse.headers));
-                    Log.i(LOG_TAG,"Error response : " + jsonString);
+                    Log.i(LOG_TAG, "Error response : " + jsonString);
                 } catch (UnsupportedEncodingException e) {
 //                    e.printStackTrace();
                 }

@@ -1,23 +1,17 @@
 package com.slogup.sgcore.network.social;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
 import com.kakao.auth.ApiResponseCallback;
 import com.kakao.auth.AuthService;
 import com.kakao.auth.AuthType;
-import com.kakao.auth.IApplicationConfig;
 import com.kakao.auth.ISessionCallback;
-import com.kakao.auth.ISessionConfig;
-import com.kakao.auth.KakaoAdapter;
 import com.kakao.auth.Session;
 import com.kakao.auth.network.response.AccessTokenInfoResponse;
 import com.kakao.network.ErrorResult;
-import com.kakao.usermgmt.UserManagement;
 import com.kakao.util.exception.KakaoException;
-import com.slogup.sgcore.CoreAPIContants;
 import com.slogup.sgcore.R;
 import com.slogup.sgcore.manager.CoreManager;
 import com.slogup.sgcore.model.Meta;

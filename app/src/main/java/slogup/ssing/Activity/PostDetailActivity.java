@@ -2,6 +2,7 @@ package slogup.ssing.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.slogup.sgcore.manager.AccountManager;
 import com.slogup.sgcore.network.CoreError;
@@ -14,16 +15,14 @@ import slogup.ssing.Model.Post;
 import slogup.ssing.Model.Tag;
 import slogup.ssing.Network.SsingClientHelper;
 import slogup.ssing.R;
-import slogup.ssing.View.PostDetailViewHolder;
-
-import static com.kakao.auth.StringSet.error;
+import slogup.ssing.View.PostDetailActivityViewHolder;
 
 public class PostDetailActivity extends BaseActivity {
 
     public static final String EXTRA_POST = "extraPost";
     private static final String LOG_TAG = PostDetailActivity.class.getSimpleName();
     private Post mSelectedPost;
-    private PostDetailViewHolder mPostDetailViewHolder;
+    private PostDetailActivityViewHolder mPostDetailViewHolder;
     private SignUpDialogFragment mSignUpDialogFragment;
 
     @Override
@@ -43,6 +42,33 @@ public class PostDetailActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+
+            case android.R.id.home: {
+                backToMain();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        backToMain();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mPostDetailViewHolder != null) updatePostDetail();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (mSignUpDialogFragment != null)
@@ -51,8 +77,8 @@ public class PostDetailActivity extends BaseActivity {
 
     private void setUpViews() {
 
-        mPostDetailViewHolder = new PostDetailViewHolder(this, mSelectedPost);
-        mPostDetailViewHolder.setButtonCallback(new PostDetailViewHolder.PostDetailButtonCallback() {
+        mPostDetailViewHolder = new PostDetailActivityViewHolder(this, mSelectedPost);
+        mPostDetailViewHolder.setButtonCallback(new PostDetailActivityViewHolder.PostDetailButtonCallback() {
             @Override
             public void onVoteButtonClick(Tag tag) {
 
@@ -182,8 +208,17 @@ public class PostDetailActivity extends BaseActivity {
     private void startAddCommentActivity() {
 
         Intent intent = new Intent(PostDetailActivity.this, AddPostActivity.class);
-        intent.putExtra(AddPostActivity.EXTRA_ADD_TYPE, AddPostActivity.AddType.Comment);
+        intent.putExtra(AddPostActivity.EXTRA_ADD_TYPE, TagSettingsActivity.AddType.Comment);
+        intent.putExtra(AddPostActivity.EXTRA_POST, mSelectedPost);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_from_right, R.anim.scale_down);
+    }
+
+    private void backToMain() {
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        overridePendingTransition(R.anim.scale_up, R.anim.slide_out_to_right);
     }
 }

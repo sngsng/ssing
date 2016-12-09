@@ -65,7 +65,6 @@ public class BaseActivity extends AppCompatActivity {
         super.finish();
 
         if (mTransitionAnimated) overridePendingTransition(R.anim.scale_up, R.anim.slide_out_to_right);
-
     }
 
     public void enableToolbar() {

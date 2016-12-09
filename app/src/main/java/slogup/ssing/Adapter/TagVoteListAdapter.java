@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -18,6 +20,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import slogup.ssing.Model.Post;
 import slogup.ssing.Model.Tag;
 import slogup.ssing.R;
+import slogup.ssing.Util.SsingUtils;
 import slogup.ssing.Util.TimeUtils;
 
 /**
@@ -25,16 +28,6 @@ import slogup.ssing.Util.TimeUtils;
  */
 
 public class TagVoteListAdapter extends RecyclerView.Adapter<TagVoteListAdapter.TagVoteListViewHolder> {
-
-    private final int[] BG_COLOR_RESOURCE_IDS = {
-            R.color.colorTagBackgroundRandom1,
-            R.color.colorTagBackgroundRandom2,
-            R.color.colorTagBackgroundRandom3,
-            R.color.colorTagBackgroundRandom4,
-            R.color.colorTagBackgroundRandom5,
-            R.color.colorTagBackgroundRandom6,
-            R.color.colorTagBackgroundRandom7
-    };
 
     private ArrayList<Tag> mTags = new ArrayList<>();
     private ListItemButtonCallback mListItemButtonCallback;
@@ -71,7 +64,20 @@ public class TagVoteListAdapter extends RecyclerView.Adapter<TagVoteListAdapter.
         holder.mTagVoteNameTextview.setText(mContext.getString(R.string.title_tag_prefix) + " " + tag.getName());
         String voteCountFormatted = NumberFormat.getNumberInstance(Locale.KOREA).format(tag.getCount());
         holder.mTagVoteCountTextView.setText(voteCountFormatted);
-        holder.mTagContainer.setBackgroundColor(getTagBackgroundColor(position));
+
+
+        if (tag.getImageInfo() != null) {
+
+            String imageUrl = tag.getImageInfo().getImageUrl();
+            Picasso.with(mContext).load(imageUrl).resize(120, 120).into(holder.mTagVoteBackgroundImageView);
+            holder.mTagVoteImageCoverView.setVisibility(View.VISIBLE);
+        }
+        else {
+
+            holder.mTagVoteImageCoverView.setVisibility(View.GONE);
+            holder.mTagContainer.setBackgroundColor(tag.getBackgroundColor());
+        }
+
 
     }
 
@@ -81,15 +87,6 @@ public class TagVoteListAdapter extends RecyclerView.Adapter<TagVoteListAdapter.
         return mTags.size();
     }
 
-    private int getTagBackgroundColor(int position) {
-
-//        Random random = new Random();
-//        int randomIndex = random.nextInt(BG_COLOR_RESOURCE_IDS.length - 1);
-
-        int index = position % BG_COLOR_RESOURCE_IDS.length;
-        return mContext.getResources().getColor(BG_COLOR_RESOURCE_IDS[index]);
-    }
-
 
     class TagVoteListViewHolder extends RecyclerView.ViewHolder {
 
@@ -97,6 +94,7 @@ public class TagVoteListAdapter extends RecyclerView.Adapter<TagVoteListAdapter.
         TextView mTagVoteNameTextview;
         TextView mTagVoteCountTextView;
         ImageView mTagVoteBackgroundImageView;
+        View mTagVoteImageCoverView;
         Button mTagVoteButton;
         ViewGroup mTagContainer;
 
@@ -109,7 +107,8 @@ public class TagVoteListAdapter extends RecyclerView.Adapter<TagVoteListAdapter.
             mTagVoteNameTextview = (TextView) itemView.findViewById(R.id.tag_vote_name_textview);
             mTagVoteCountTextView = (TextView) itemView.findViewById(R.id.tag_vote_count_textview);
             mTagVoteBackgroundImageView = (ImageView) itemView.findViewById(R.id.tag_vote_background_imageview);
-            mTagVoteButton = (Button)itemView.findViewById(R.id.tag_vote_button);
+            mTagVoteImageCoverView = itemView.findViewById(R.id.tag_vote_image_cover_view);
+            mTagVoteButton = (Button) itemView.findViewById(R.id.tag_vote_button);
 
             mTagVoteButton.setOnClickListener(new View.OnClickListener() {
                 @Override

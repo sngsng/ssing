@@ -3,6 +3,7 @@
           package="slogup.ssing">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name="com.slogup.sgcore.GlobalApplication"
@@ -54,11 +55,25 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.MainActivity">
+        <activity
+            android:name=".Activity.MainActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".Activity.PostDetailActivity">
+        <activity
+            android:name=".Activity.PostDetailActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".Activity.AddPostActivity">
+        <activity
+            android:name=".Activity.AddPostActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".Activity.TagSettingsActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".Activity.PostSearchActivity">
         </activity>
     </application>
 

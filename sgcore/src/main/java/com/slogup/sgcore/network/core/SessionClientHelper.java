@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
-import com.slogup.sgcore.CoreAPIContants;
+import com.slogup.sgcore.CoreAPIMeta;
 import com.slogup.sgcore.manager.AccountManager;
 import com.slogup.sgcore.network.CookieStore;
 import com.slogup.sgcore.network.CoreError;
@@ -72,7 +72,7 @@ public class SessionClientHelper {
     public static void checkLogin(Context context, final RestClient.RestListener listener) {
 
         RestClient restClient = new RestClient(context);
-        restClient.request(RestClient.Method.PUT, CoreAPIContants.Session.URL, null, new RestClient.RestListener() {
+        restClient.request(RestClient.Method.PUT, CoreAPIMeta.Session.URL, null, new RestClient.RestListener() {
             @Override
             public void onBefore() {
 
@@ -111,7 +111,7 @@ public class SessionClientHelper {
     public static void logout(final Context context, final RestClient.RestListener listener) {
 
         RestClient restService = new RestClient(context);
-        restService.request(RestClient.Method.DELETE, CoreAPIContants.Session.URL, null, new RestClient.RestListener() {
+        restService.request(RestClient.Method.DELETE, CoreAPIMeta.Session.URL, null, new RestClient.RestListener() {
             @Override
             public void onBefore() {
 
@@ -153,16 +153,16 @@ public class SessionClientHelper {
 
                 JSONObject params = new JSONObject();
                 try {
-                    params.put(CoreAPIContants.SocialSesstion.Request.PROVIDER, socialClientHelper.getProvider());
-                    params.put(CoreAPIContants.SocialSesstion.Request.PID, pid);
-                    params.put(CoreAPIContants.SocialSesstion.Request.ACCESS_TOKEN, accessToken);
+                    params.put(CoreAPIMeta.SocialSesstion.Request.PROVIDER, socialClientHelper.getProvider());
+                    params.put(CoreAPIMeta.SocialSesstion.Request.PID, pid);
+                    params.put(CoreAPIMeta.SocialSesstion.Request.ACCESS_TOKEN, accessToken);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
                 RestClient restClient = new RestClient(activity);
-                restClient.request(RestClient.Method.POST, CoreAPIContants.SocialSesstion.URL, params, new RestClient.RestListener() {
+                restClient.request(RestClient.Method.POST, CoreAPIMeta.SocialSesstion.URL, params, new RestClient.RestListener() {
                     @Override
                     public void onBefore() {
 

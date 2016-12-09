@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import slogup.ssing.Network.SsingAPIMeta;
+import slogup.ssing.Util.CommonUtils;
+import slogup.ssing.Util.SsingUtils;
 
 /**
  * Created by sngjoong on 2016. 11. 27..
@@ -46,7 +48,7 @@ public class Post implements Parcelable {
 
 
 
-    public Post(JSONObject jsonObject) {
+    public Post(Context context, JSONObject jsonObject) {
 
         try {
             mId = jsonObject.getInt(SsingAPIMeta.Posts.Response.ID);
@@ -59,7 +61,13 @@ public class Post implements Parcelable {
             // Post GETS 응답때만 옴 (총 투표수)
             if (jsonObject.has(SsingAPIMeta.Posts.Response.TOTAL_COUNT)) {
 
-                mTotalVoteCount = jsonObject.getInt(SsingAPIMeta.Posts.Response.TOTAL_COUNT);
+                mTotalVoteCount = 0;
+
+                if (!jsonObject.isNull(SsingAPIMeta.Posts.Response.TOTAL_COUNT)) {
+
+                    mTotalVoteCount = jsonObject.getInt(SsingAPIMeta.Posts.Response.TOTAL_COUNT);
+                }
+
             }
 
 
@@ -78,6 +86,7 @@ public class Post implements Parcelable {
 
                     JSONObject tagJson = tagCountsJson.getJSONObject(i);
                     Tag tag = new Tag(tagJson);
+                    tag.setBackgroundColor(SsingUtils.getTagBackgroundColor(context, i));
                     tags.add(tag);
                 }
 
@@ -94,7 +103,7 @@ public class Post implements Parcelable {
                 for (int i = 0; i < commentsJson.length(); i++) {
 
                     JSONObject commentJson = commentsJson.getJSONObject(i);
-                    Comment comment = new Comment(commentJson);
+                    Comment comment = new Comment(context, commentJson);
                     comments.add(comment);
                 }
                 mComments = comments;
@@ -105,7 +114,7 @@ public class Post implements Parcelable {
         }
     }
 
-    public static void findOne(Context context, int postId, final RestClient.RestListener listener) {
+    public static void findOne(final Context context, int postId, final RestClient.RestListener listener) {
 
         RestClient restClient = new RestClient(context);
         String url = SsingAPIMeta.Posts.URL + "/" + Integer.toString(postId);
@@ -123,7 +132,7 @@ public class Post implements Parcelable {
                 if (response instanceof JSONObject) {
 
                     JSONObject resJson = (JSONObject) response;
-                    Post post = new Post(resJson);
+                    Post post = new Post(context, resJson);
                     listener.onSuccess(post);
                 }
             }
@@ -146,7 +155,7 @@ public class Post implements Parcelable {
     }
 
 
-    public static void findAll(Context context, @Nullable PostSearchFilter searchFilter, final RestClient.RestListener listener) {
+    public static void findAll(final Context context, @Nullable PostSearchFilter searchFilter, final RestClient.RestListener listener) {
 
         RestClient restClient = new RestClient(context);
         String url;
@@ -203,7 +212,7 @@ public class Post implements Parcelable {
                         for (int i = 0; i < rows.length(); i++) {
 
                             JSONObject row = rows.getJSONObject(i);
-                            Post post = new Post(row);
+                            Post post = new Post(context, row);
                             posts.add(post);
 
                         }
@@ -235,7 +244,62 @@ public class Post implements Parcelable {
         });
     }
 
-    public static void addPost() {
+    public static void addOne(final Context context, String postBody, @Nullable ArrayList<String>tags, @Nullable ArrayList<String>images, final RestClient.RestListener listener) {
+
+        final JSONObject params = new JSONObject();
+
+        Log.i(LOG_TAG, "Body : " + postBody);
+        if (tags != null) Log.i(LOG_TAG, "Tags : " + tags.toString());
+        if (images!= null) Log.i(LOG_TAG, "ImageIds : " + images.toString());
+
+
+        try {
+            params.put(SsingAPIMeta.Posts.Request.BODY, postBody);
+
+            if (tags != null && !tags.isEmpty())
+                params.put(SsingAPIMeta.Posts.Request.TAGS, CommonUtils.arrayParamToString(tags));
+
+            if (images != null && !images.isEmpty())
+                params.put(SsingAPIMeta.Posts.Request.IMAGE_IDS, CommonUtils.arrayParamToString(images));
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        RestClient restClient = new RestClient(context);
+        restClient.request(RestClient.Method.POST, SsingAPIMeta.Posts.URL, params, new RestClient.RestListener() {
+            @Override
+            public void onBefore() {
+
+                listener.onBefore();
+            }
+
+            @Override
+            public void onSuccess(Object response) {
+
+                Log.i(LOG_TAG, "AddPost : " + response.toString());
+
+                if (response instanceof JSONObject) {
+
+                    Post post = new Post(context, (JSONObject) response);
+                    listener.onSuccess(post);
+                }
+
+            }
+
+            @Override
+            public void onFail(CoreError error) {
+
+                listener.onFail(error);
+            }
+
+            @Override
+            public void onError(CoreError error) {
+
+                listener.onError(error);
+            }
+        });
 
     }
 

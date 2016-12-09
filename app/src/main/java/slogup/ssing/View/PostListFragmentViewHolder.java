@@ -4,12 +4,11 @@ import android.app.Activity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.slogup.sgcore.network.CoreError;
-import com.slogup.sgcore.network.RestClient;
 
 import java.util.ArrayList;
 
@@ -34,7 +33,11 @@ public class PostListFragmentViewHolder {
     private PostListAdapter mPostListAdapater;
     private ArrayList<Post> mPosts;
     private SwipeRefreshLayout.OnRefreshListener mRefreshListener;
-    private PostClickCallback mPostClickCallback;
+    private PostListActionCallback mPostListActionCallback;
+
+    private LinearLayoutManager mLinearLayoutManager;
+    private boolean mUserScrolledLast;
+    private boolean mIsPagingEnabled = true;
 
     public PostListFragmentViewHolder(Activity activity, View rootView, ArrayList<Post> posts) {
 
@@ -44,12 +47,17 @@ public class PostListFragmentViewHolder {
 
     }
 
-    public void setPostClickCallback(PostClickCallback postClickCallback) {
-        mPostClickCallback = postClickCallback;
+    public void setPostListActionCallback(PostListActionCallback postListActionCallback) {
+        mPostListActionCallback = postListActionCallback;
     }
 
     public void setRefreshListener(SwipeRefreshLayout.OnRefreshListener refreshListener) {
         mRefreshListener = refreshListener;
+    }
+
+    public void setEnabledRefreshLayout(boolean enable) {
+
+        mSwipeRefreshLayout.setEnabled(enable);
     }
 
     public void initializeView() {
@@ -81,6 +89,13 @@ public class PostListFragmentViewHolder {
         mEmptyListTextView.setVisibility(View.VISIBLE);
     }
 
+    public void showEmptyView(String msg) {
+
+        mEmptyListTextView.setText(msg);
+        mEmptyListTextView.setVisibility(View.VISIBLE);
+    }
+
+
     public void hideEmptyView() {
 
         mEmptyListTextView.setVisibility(View.GONE);
@@ -109,6 +124,11 @@ public class PostListFragmentViewHolder {
         mSwipeRefreshLayout = (SwipeRefreshLayout)mRootView.findViewById(R.id.post_list_swipe_refresh_layout);
     }
 
+    public void setPagingEnable(boolean enable) {
+
+        mIsPagingEnabled = enable;
+    }
+
     private void setUpRecyclerView() {
 
         mPostListAdapater = new PostListAdapter(mCurrentActivity, mPosts);
@@ -116,24 +136,56 @@ public class PostListFragmentViewHolder {
             @Override
             public void onPostDetailButtonClick(int position) {
 
-                if (mPostClickCallback != null) {
+                if (mPostListActionCallback != null) {
 
                     Post post = mPosts.get(position);
-                    mPostClickCallback.onPostDetailClick(post);
+                    mPostListActionCallback.onPostDetailClick(post);
                 }
             }
         });
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mCurrentActivity));
+        mLinearLayoutManager = new LinearLayoutManager(mCurrentActivity);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
         mRecyclerView.addItemDecoration(new RecyclerViewVerticalSpaceDecoration(DEFAULT_VERTICAL_MARGIN));
         mRecyclerView.setAdapter(mPostListAdapater);
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+                //요청중이 아니고 && 마지막페이지를 스크롤하고 && 데이터 페이지가 마지막이아닐때만호출
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE && mUserScrolledLast && mIsPagingEnabled) {
+
+                    Log.d("Test Paging", "추가 로드");
+
+                    if (mPostListActionCallback != null) {
+
+                        mPostListActionCallback.onScrollBottom(true);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                int visibleItemCount = mLinearLayoutManager.getChildCount();
+                int totalItemCount = mLinearLayoutManager.getItemCount();
+                int firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
+
+                mUserScrolledLast = (totalItemCount > 0) && (firstVisibleItem + visibleItemCount >= totalItemCount);
+            }
+        });
+
         mPostListAdapater.notifyDataSetChanged();
     }
 
 
-    public interface PostClickCallback {
+    public interface PostListActionCallback {
 
         void onPostDetailClick(Post post);
+        void onScrollBottom(boolean shouldLoadData);
     }
 
 }

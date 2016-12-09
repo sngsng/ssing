@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.slogup.sgcore.CoreAPIContants;
+import com.slogup.sgcore.CoreAPIMeta;
 
 /**
  * Created by sngjoong on 16. 8. 25..
@@ -29,18 +29,18 @@ public class CookieStore {
     public void setCookie(Context context, String cookie) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.edit().putString(CoreAPIContants.RootUrl, cookie).apply();
+        sharedPreferences.edit().putString(CoreAPIMeta.RootUrl, cookie).apply();
     }
 
     public void removeCookie(Context context) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.edit().remove(CoreAPIContants.RootUrl).apply();
+        sharedPreferences.edit().remove(CoreAPIMeta.RootUrl).apply();
     }
 
     public String getCookie(Context context) {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        return sharedPreferences.getString(CoreAPIContants.RootUrl, "");
+        return sharedPreferences.getString(CoreAPIMeta.RootUrl, "");
     }
 }
